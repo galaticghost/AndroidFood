@@ -1,0 +1,15 @@
+@startuml Banco de Dados
+
+entity restaurante{
+    nomeRestaurante VARCHAR NOT NULL
+    comissao INTERGER
+    email VARCHAR NOT NULL
+    senha VARCHAR NOT NULL
+}
+
+entity x{
+    
+}
+
+
+@enduml
