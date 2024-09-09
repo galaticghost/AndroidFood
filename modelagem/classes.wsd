@@ -1,35 +1,18 @@
 @startuml classes
 
-class conexao{
-    -login
-    -senha
-    -localhost
-    -banco
-    #conexao
-    --
-    #construct()
-    -conexao()
+class App{
+
 }
 
-class cadastro{
-    -nome_restaurante
-    -comissao
-    -email
-    -senha
-    --
-    +construct()
-    +getters()
-    +setters()
+class Utils{
+
 }
 
-class login{
-    -email
-    -senha
-    --
-    +construct()
-    +logar(email,senha)
+class Database{
+
 }
 
-conexao "1..1" <|-- "1..*" cadastro
-conexao "1..1" <|-- "1..*" login
+class Usuario{
+
+}
 @enduml
