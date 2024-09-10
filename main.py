@@ -2,7 +2,12 @@
 from app.app import App
 from database.database import Database
 
-database = Database()
-app = App(database)
+def main():
+    database = Database()
+    app = App(database)
+    app.menu_inicial()
 
-app.menu_inicial()
+
+
+if __name__ == "__main__":
+    main()

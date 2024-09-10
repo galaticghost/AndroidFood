@@ -2,6 +2,9 @@ import re
 
 class Usuario:
     
+    def __init__(self,database):
+        self.database = database
+    
     def cadastro(self):
         while True:
             self.__restaurante = input("Digite o nome do seu restaurante: ")
@@ -27,11 +30,39 @@ class Usuario:
                 print("O email digitado não é valído")
                 continue
             
-            if 2 == 2:# Aqui vai ter a checagem do email na database
+            if self.database.consulta_coluna(self.__email) == True : # Aqui vai ter a checagem do email na database
                 print("O email já consta no banco de dados")
                 continue
             else:
                 break
-
-        while True:
+                
+        while True: # Não Concluido
             self.__senha = input("Digite a sua senha")
+            # Checagem de senha
+            if len(self.__senha) < 5:
+                print("Sua senha é UMA MERDA PORRA. PUTA QUE PARIU VAI FAZER UMA SENHA DIREITO.")
+                continue
+            
+            elif re.search("[A-Z]",self.__senha) == None:
+                print("Sua senha não possui uma letra maiúscula")
+                continue
+            
+            elif re.search("[a-z]",self.__senha) == None:
+                print("Sua senha não possui uma letra minúscula")
+                continue
+            
+            elif re.search("[0-9",self.__senha) == None:
+                print("Sua senha não possui números")
+                continue
+            #A senha é criptografada em hash
+            else:
+                self.__senha = hash(self.__senha)
+                break
+
+    def login(self):
+        self.__email = input("Digite o seu email: ")
+        self.__senha = input("Digite a sua senha: ")
+        
+        if self.database.consulta_usuario() == False: # FAZER
+            pass
+        
