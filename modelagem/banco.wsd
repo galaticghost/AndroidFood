@@ -12,7 +12,7 @@ entity produtos{
     id INTERGER NOT NULL <<PK>>
     nomeProduto VARCHAR NOT NULL 
     preco FLOAT NOT NULL
-    idRestaurante VARCHAR <<FK>>
+    idRestaurante INTERGER <<FK>>
 }
 
 restaurante ||--|{ produtos

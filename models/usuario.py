@@ -36,11 +36,11 @@ class Usuario:
             else:
                 break
                 
-        while True: # Não Concluido
+        while True:
             self.__senha = input("Digite a sua senha")
             # Checagem de senha
             if len(self.__senha) < 5:
-                print("Sua senha é UMA MERDA PORRA. PUTA QUE PARIU VAI FAZER UMA SENHA DIREITO.")
+                print("Sua senha tem menos de 5 caracteres")
                 continue
             
             elif re.search("[A-Z]",self.__senha) == None:
@@ -51,12 +51,12 @@ class Usuario:
                 print("Sua senha não possui uma letra minúscula")
                 continue
             
-            elif re.search("[0-9",self.__senha) == None:
-                print("Sua senha não possui números")
+            elif re.search("[0-9]",self.__senha) == None:
+                print("Sua senha não possui nenhum número")
                 continue
-            #A senha é criptografada em hash
+            #Se passar pelos testes
             else:
-                self.__senha = hash(self.__senha)
+                self.__senha = hash(self.__senha) # Ela é criptografada
                 break
 
     def login(self):
