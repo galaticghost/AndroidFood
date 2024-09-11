@@ -1,18 +1,18 @@
 @startuml Banco de Dados
 
 entity restaurante{
-    id INTERGER NOT NULL <<PK>>
-    nomeRestaurante VARCHAR NOT NULL
+    pk_restaurante INTERGER NOT NULL <<PK>>
+    nome_restaurante VARCHAR NOT NULL
     comissao INTERGER
-    email VARCHAR NOT NULL
-    senha VARCHAR NOT NULL
+    email_restaurante VARCHAR NOT NULL
+    senha_restaurante VARCHAR NOT NULL
 }
 
-entity produtos{
-    id INTERGER NOT NULL <<PK>>
-    nomeProduto VARCHAR NOT NULL 
+entity produto{
+    pk_produto INTERGER NOT NULL <<PK>>
+    nome_produto VARCHAR NOT NULL 
     preco FLOAT NOT NULL
-    idRestaurante INTERGER <<FK>>
+    pk_restaurante INTERGER <<FK>>
 }
 
 restaurante ||--|{ produtos

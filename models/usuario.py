@@ -15,7 +15,7 @@ class Usuario:
                 break
 
         while True:
-            self.__comissao = int(input("Digite o valor da comissão: "))
+            self.__comissao = int(input("Digite o valor da comissão: ")) #dá um jeito de melhorar isso aqui
             if self.__comissao < 0:
                 print("O valor da comissão deve ser igual ou maior que 0")
                 continue
@@ -23,21 +23,20 @@ class Usuario:
                 break
 
         while True:
-            self.__email = input("Digite o seu email: ")
-            self.__email.lower()
-            
-            if re.search("[\w]@[\w].[a-z]",self.__email):
+            self.__email = input("Digite o seu email: ").lower()
+
+            if re.search("[\w,]@[\w,].[a-z]",self.__email) == None:
                 print("O email digitado não é valído")
                 continue
             
-            if self.database.consulta_coluna(self.__email) == True : # Aqui vai ter a checagem do email na database TODO 
+            if self.database.consulta_coluna("email_restaurante","restaurante","email_restaurante",self.__email) == True:
                 print("O email já consta no banco de dados")
                 continue
             else:
                 break
                 
         while True:
-            self.__senha = input("Digite a sua senha")
+            self.__senha = input("Digite a sua senha: ")
             # Checagem de senha
             if len(self.__senha) < 5:
                 print("Sua senha tem menos de 5 caracteres")
@@ -58,6 +57,8 @@ class Usuario:
             else:
                 self.__senha = hash(self.__senha) # Ela é criptografada
                 break
+            
+        self.database.inserir(self.__restaurante,self.__comissao,self.__email,self.__senha) # reve isso daqui
 
     def login(self):
         self.__email = input("Digite o seu email: ")
