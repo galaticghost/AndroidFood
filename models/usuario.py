@@ -30,7 +30,7 @@ class Usuario:
                 print("O email digitado não é valído")
                 continue
             
-            if self.database.consulta_coluna(self.__email) == True : # Aqui vai ter a checagem do email na database
+            if self.database.consulta_coluna(self.__email) == True : # Aqui vai ter a checagem do email na database TODO 
                 print("O email já consta no banco de dados")
                 continue
             else:
