@@ -7,22 +7,20 @@ class App:
         self.database = database
 
     def menu_inicial(self):
-        Utils.limpar_tela()
-
-        print("ANDROID FOOD O FOOD MAIS ANDROID DOS FOODS DO ANDROID")
-        print("1 -- Cadastrar")
-        print("2 -- Login")
         
-        #Enquanto o usuário não escolher corretamente, o loop se repete
+        #REESCREVA-ME 53928352992532368236836283629806234908-860843q689042780-962789072468902674890674987246987642-8962-902678-2647-04267-9024  37163468703
         while True:
+            self.__tela_inicial()
             escolha = input("Selecione uma opção: ")
             match(escolha):
                 case("1"):
                     self.cadastro_usuario()
-                    break
+                    continue
                 case("2"):
-                    self.login()
-                    break
+                    if self.login() == False:
+                        continue
+                    else:
+                        break
                 case _:
                     print("Escolha inválida")
                     continue
@@ -38,11 +36,12 @@ class App:
         
         usuario = Usuario(self.database)
         
-        usuario.login()
+        if usuario.login() == False:
+            return False
+        else:
+            self.__menu_restaurante(usuario)
         
-        self.__menu_restaurante(usuario)
-        
-    def __menu_restaurante(self,usuario): # obvio
+    def __menu_restaurante(self,usuario): # obvio REESCREMAGVJK IJKIEJ+)IE$WT)_t4ep´4236bb4 6,m643bq8   9-34u65m-0
         self.__painel(usuario)
         
         while True: 
@@ -56,7 +55,7 @@ class App:
                     self.apagar_produto()
                     continue
                 case("3"):
-                    self.alterar_comissao()
+                    self.alterar_comissao(usuario)
                     continue
                 case("4"):
                     self.logout(usuario)
@@ -64,6 +63,13 @@ class App:
                 case _:
                     print("Escolha inválida")
                     continue
+    
+    def __tela_inicial(self):
+        Utils.limpar_tela()
+
+        print("ANDROID FOOD O FOOD MAIS ANDROID DOS FOODS DO ANDROID")
+        print("1 -- Cadastrar")
+        print("2 -- Login")
     
     def __painel(self,usuario):
         Utils.limpar_tela()
@@ -83,8 +89,18 @@ class App:
     def apagar_produto(self):
         pass
     
-    def alterar_comissao(self):
-        pass
+    def alterar_comissao(self,usuario):
+        Utils.limpar_tela()
+        print(f"O valor atual da comissão é {usuario.comissao}")
+        while True:
+
+            comissao = int(input("Digite o novo valor: ")) # ve ai se da pra fazer input melhor
+            
+            if comissao <= 0:
+                print("Valor Inválido!")
+                continue
+            else:
+                break
     
     def logout(self,usuario):
         del usuario

@@ -29,7 +29,7 @@ class Usuario:
                 print("O email digitado não é valído")
                 continue
             
-            if self.database.consulta_coluna("email_restaurante","restaurante","email_restaurante",self.email) == True: # verifica se o email ja existe na database
+            if self.database.consulta_coluna("email_usuario","usuario","email_usuario",self.email) == True: # verifica se o email ja existe na database
                 print("O email já consta no banco de dados")
                 continue
             else:
@@ -58,25 +58,25 @@ class Usuario:
                  # Eu queria criptografar com hash mas nao deu
                 break
         
-        sql = f'INSERT INTO restaurante(nome_restaurante,comissao,email_restaurante,senha_restaurante) VALUES (?,?,?,?);'
+        sql = f'INSERT INTO usuario(restaurante,comissao,email_usuario,senha_usuario) VALUES (?,?,?,?);'
         tupla = (self.restaurante,self.comissao,self.email,self.senha)   
         self.database.executar(sql,tupla)
 
     def login(self):
         
-        while True:
-        
-            self.email = input("Digite o seu email: ").lower()
-            self.senha = input("Digite a sua senha: ")
+        self.email = input("Digite o seu email: ").lower()
+        self.senha = input("Digite a sua senha: ")
 
-            if self.database.consulta_usuario(self.email,self.senha) == False: #
-                print("Usuário inválido")
-            else:
-                result = self.database.consulta_completa(self.email,self.senha)
-                self.pk = result[0]
-                self.restaurante = result[1]
-                self.comissao = result[2]
-                break
+        if self.database.consulta_login(self.email,self.senha) == False: #
+            print("Usuário inválido")
+            return False
+        else:
+            self.database.executar("UPDATE usuario SET ultima_atualizacao = datetime('now','localtime') WHERE email_usuario = ? AND senha_usuario = ?",(self.email,self.senha))
+            result = self.database.consulta_usuario(self.email,self.senha)
+            self.pk = result[0]
+            self.restaurante = result[1]
+            self.comissao = result[2]
+            return True
     
     @property
     def restaurante(self):

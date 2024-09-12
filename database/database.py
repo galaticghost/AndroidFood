@@ -5,16 +5,16 @@ class Database:
     def __init__(self):
         self.conexao = sqlite3.connect("androidfood.db")
 
-    def consulta_usuario(self,email,senha): # chegagem para o login
-        sql = 'SELECT email_restaurante,senha_restaurante FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?;'
+    def consulta_login(self,email,senha): # chegagem para o login
+        sql = 'SELECT email_usuario,senha_usuario FROM usuario WHERE email_usuario = ? AND senha_usuario = ?;'
         result = self.conexao.execute(sql,(email,senha))
         if result.fetchone() == None: # EU ODEIO ESSE FETCHONE 
             return False
         else:
             return True
         
-    def consulta_completa(self,email,senha):
-        sql = 'SELECT * FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?'
+    def consulta_usuario(self,email,senha):
+        sql = 'SELECT * FROM usuario WHERE email_usuario = ? AND senha_usuario = ?'
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
