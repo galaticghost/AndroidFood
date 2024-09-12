@@ -6,6 +6,8 @@ entity restaurante{
     comissao INTERGER
     email_restaurante VARCHAR NOT NULL
     senha_restaurante VARCHAR NOT NULL
+    criacao DATE NOT NULL
+    ultimo_acesso DATE
 }
 
 entity produto{

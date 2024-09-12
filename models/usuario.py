@@ -7,63 +7,106 @@ class Usuario:
     
     def cadastro(self):
         while True:
-            self.__restaurante = input("Digite o nome do seu restaurante: ")
-            if len(self.__restaurante) <= 10:
-                print("O nome do restaurante deve ter mais de 10 letras")
+            self.restaurante = input("Digite o nome do seu restaurante: ")
+            if len(self.restaurante) <= 10:
+                print("O nome do restaurante deve ter mais de 10 caracteres")
                 continue
             else:
                 break
 
         while True:
-            self.__comissao = int(input("Digite o valor da comissão: ")) #dá um jeito de melhorar isso aqui
-            if self.__comissao < 0:
+            self.comissao = int(input("Digite o valor da comissão: ")) #dá um jeito de melhorar isso aqui
+            if self.comissao < 0:
                 print("O valor da comissão deve ser igual ou maior que 0")
                 continue
             else:
                 break
 
-        while True:
-            self.__email = input("Digite o seu email: ").lower()
+        while True: # recebe e converte o email para lowercase
+            self.email = input("Digite o seu email: ").lower()
 
-            if re.search("[\w,]@[\w,].[a-z]",self.__email) == None:
+            if re.search("[\w,]@[\w,].[a-z]",self.email) == None: # verifica se o email é um email
                 print("O email digitado não é valído")
                 continue
             
-            if self.database.consulta_coluna("email_restaurante","restaurante","email_restaurante",self.__email) == True:
+            if self.database.consulta_coluna("email_restaurante","restaurante","email_restaurante",self.email) == True: # verifica se o email ja existe na database
                 print("O email já consta no banco de dados")
                 continue
             else:
                 break
                 
         while True:
-            self.__senha = input("Digite a sua senha: ")
+            self.senha = input("Digite a sua senha: ")
             # Checagem de senha
-            if len(self.__senha) < 5:
+            if len(self.senha) < 5:
                 print("Sua senha tem menos de 5 caracteres")
                 continue
             
-            elif re.search("[A-Z]",self.__senha) == None:
+            elif re.search("[A-Z]",self.senha) == None:
                 print("Sua senha não possui uma letra maiúscula")
                 continue
             
-            elif re.search("[a-z]",self.__senha) == None:
+            elif re.search("[a-z]",self.senha) == None:
                 print("Sua senha não possui uma letra minúscula")
                 continue
             
-            elif re.search("[0-9]",self.__senha) == None:
+            elif re.search("[0-9]",self.senha) == None:
                 print("Sua senha não possui nenhum número")
                 continue
             #Se passar pelos testes
             else:
-                self.__senha = hash(self.__senha) # Ela é criptografada
+                 # Eu queria criptografar com hash mas nao deu
                 break
-            
-        self.database.inserir(self.__restaurante,self.__comissao,self.__email,self.__senha) # reve isso daqui
+        
+        sql = f'INSERT INTO restaurante(nome_restaurante,comissao,email_restaurante,senha_restaurante) VALUES (?,?,?,?);'
+        tupla = (self.restaurante,self.comissao,self.email,self.senha)   
+        self.database.executar(sql,tupla)
 
     def login(self):
-        self.__email = input("Digite o seu email: ")
-        self.__senha = input("Digite a sua senha: ")
         
-        if self.database.consulta_usuario() == False: # FAZER
-            pass
+        while True:
         
+            self.email = input("Digite o seu email: ").lower()
+            self.senha = input("Digite a sua senha: ")
+
+            if self.database.consulta_usuario(self.email,self.senha) == False: #
+                print("Usuário inválido")
+            else:
+                result = self.database.consulta_completa(self.email,self.senha)
+                self.pk = result[0]
+                self.restaurante = result[1]
+                self.comissao = result[2]
+                break
+    
+    @property
+    def restaurante(self):
+        return self.__restaurante
+    
+    @restaurante.setter
+    def restaurante(self,dado: str):
+        self.__restaurante = dado
+        
+    @property
+    def comissao(self):
+        return self.__comissao
+    
+    @comissao.setter
+    def comissao(self,dado: int):
+        self.__comissao = dado
+        
+    @property
+    def email(self):
+        return self.__email
+    
+    @email.setter
+    def email(self,dado: str):
+        dado = dado.lower()
+        self.__email = dado
+        
+    @property
+    def senha(self):
+        return self.__senha
+    
+    @senha.setter
+    def senha(self,dado: str):
+        self.__senha = dado
