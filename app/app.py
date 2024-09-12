@@ -42,9 +42,9 @@ class App:
             self.__menu_restaurante(usuario)
         
     def __menu_restaurante(self,usuario): # obvio REESCREMAGVJK IJKIEJ+)IE$WT)_t4ep´4236bb4 6,m643bq8   9-34u65m-0
-        self.__painel(usuario)
         
         while True: 
+            self.__painel(usuario)
             escolha = input("Selecione uma opção: ")
             
             match(escolha):
@@ -100,6 +100,8 @@ class App:
                 print("Valor Inválido!")
                 continue
             else:
+                self.database.executar('UPDATE usuario SET comissao = ? WHERE pk_usuario = ? ',(comissao,usuario.pk))
+                usuario.comissao = comissao
                 break
     
     def logout(self,usuario):
