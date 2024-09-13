@@ -14,7 +14,7 @@ class Produto:
                 print("O nome do produto deve ter mais de 4 letras")
                 continue
             elif re.search('[0-9]!@#$%ˆ&()_:.;\'\"\\/=_+-',self.nome) == True:
-                pass
+                print("Caractere inválido")
                 continue
             else:
                 break

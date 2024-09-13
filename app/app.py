@@ -79,7 +79,7 @@ class App:
     def __painel(self,usuario):
         Utils.limpar_tela()
         print(f"Bem Vindo {usuario.restaurante}!")
-        self.__produto_tabela()
+        #self.__produto_tabela()
         print("1 -- Cadastrar produto")
         print("2 -- Apagar produto")
         print("3 -- Alterar comissão")
