@@ -78,6 +78,20 @@ class Usuario:
             self.comissao = result[2]
             return True
     
+    def alterar_comissao(self):
+        print(f"O valor atual da comissão é {self.comissao}")
+        while True:
+
+            comissao = int(input("Digite o novo valor: ")) # ve ai se da pra fazer input melhor
+            
+            if comissao <= 0:
+                print("Valor Inválido!")
+                continue
+            else:
+                self.database.executar('UPDATE usuario SET comissao = ? WHERE pk_usuario = ? ',(comissao,self.pk))
+                self.comissao = comissao
+                break
+    
     @property
     def restaurante(self):
         return self.__restaurante

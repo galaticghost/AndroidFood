@@ -7,7 +7,5 @@ def main():
     app = App(database)
     app.menu_inicial()
 
-
-
 if __name__ == "__main__":
     main()

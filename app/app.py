@@ -1,5 +1,6 @@
 from utils.utils import Utils
 from models.usuario import Usuario
+from models.produto import Produto
 
 class App:
 
@@ -21,6 +22,9 @@ class App:
                         continue
                     else:
                         break
+                case("3"):
+                    Utils.limpar_tela()
+                    exit()
                 case _:
                     print("Escolha inválida")
                     continue
@@ -49,10 +53,10 @@ class App:
             
             match(escolha):
                 case("1"):
-                    self.cadastro_produto()
+                    self.cadastro_produto(usuario)
                     continue
                 case("2"):
-                    self.apagar_produto()
+                    self.apagar_produto(usuario)
                     continue
                 case("3"):
                     self.alterar_comissao(usuario)
@@ -70,6 +74,7 @@ class App:
         print("ANDROID FOOD O FOOD MAIS ANDROID DOS FOODS DO ANDROID")
         print("1 -- Cadastrar")
         print("2 -- Login")
+        print("3 -- Sair")
     
     def __painel(self,usuario):
         Utils.limpar_tela()
@@ -81,29 +86,25 @@ class App:
         print("4 -- Logout")
                 
     def __produto_tabela(self):
-        pass
+        Produto.tabela_produto()
     
-    def cadastro_produto(self):
-        pass
+    def cadastro_produto(self,usuario):
+        Utils.limpar_tela()
+        
+        produto = Produto(self.database,usuario)
+        produto.cadastrar()
     
     def apagar_produto(self):
-        pass
+        Utils.limpar_tela()
+        
+        produto = Produto(self.database)
+        produto.apagar()
     
     def alterar_comissao(self,usuario):
         Utils.limpar_tela()
-        print(f"O valor atual da comissão é {usuario.comissao}")
-        while True:
-
-            comissao = int(input("Digite o novo valor: ")) # ve ai se da pra fazer input melhor
-            
-            if comissao <= 0:
-                print("Valor Inválido!")
-                continue
-            else:
-                self.database.executar('UPDATE usuario SET comissao = ? WHERE pk_usuario = ? ',(comissao,usuario.pk))
-                usuario.comissao = comissao
-                break
+        
+        usuario.alterar_comissao()
     
-    def logout(self,usuario):
+    def logout(self,usuario): # Deleta o objeto usuario e volta pro menu incial
         del usuario
         self.menu_inicial()

@@ -18,6 +18,11 @@ class Database:
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
+    def consulta_produto(self,restaurante):
+        sql = 'SELECT pk_produto,nome_produto,preco FROM produto WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(restaurante,))
+        return result.fetchall()
+    
     def consulta_coluna(self,coluna,tabela,coluna_comparador,item): # eu aprendi parametros do sql por meio desse codigo. eu odeio esse codigo
         sql = f'SELECT {coluna} FROM {tabela} WHERE {coluna_comparador} = ?;'
         result = self.conexao.execute(sql,(item,))
