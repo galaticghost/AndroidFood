@@ -2,7 +2,7 @@ import re
 
 class Usuario:
     
-    def __init__(self,database):
+    def __init__(self,database): # o usuario recebe uma instancia de Database
         self.database = database
     
     def cadastro(self):
@@ -15,7 +15,7 @@ class Usuario:
                 break
 
         while True:
-            self.comissao = int(input("Digite o valor da comissão: ")) #dá um jeito de melhorar isso aqui
+            self.comissao = int(input("Digite o valor da comissão: ")) #dá um jeito de melhorar isso aqui monteiro
             if self.comissao < 0:
                 print("O valor da comissão deve ser igual ou maior que 0")
                 continue
@@ -92,7 +92,16 @@ class Usuario:
                 self.comissao = comissao
                 break
     
-    @property
+    def tabela_produto(self): # Mostra os produtos
+        result = self.database.consulta_produto(self.pk) # Retorna os produtos
+        if not result: # caso result esteja vazia
+            print("Nenhum produto cadastrado!")
+        else:
+            print("ID | Nome | Preço") # printa id nome e preço
+            for tupla in result: # para cada tupla 
+                print(f"{tupla[0]} | {tupla[1]} | {tupla[2]}")
+    
+    @property # getters e setters
     def restaurante(self):
         return self.__restaurante
     
