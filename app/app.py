@@ -49,7 +49,6 @@ class App:
         while True: #loop para o input
             self.__painel(usuario) # Tela com as opções e a tabela dos produtos
             escolha = input("Selecione uma opção: ")
-            
             match(escolha):
                 case("1"):
                     self.cadastro_produto(usuario)
@@ -93,7 +92,7 @@ class App:
     def apagar_produto(self,usuario):  #limpa a tela, cria uma instância do produto e chama o método apagar
         Utils.limpar_tela() # Não funcional
         
-        produto = Produto(self.database,usuario.pk)
+        produto = Produto(self.database,usuario)
         produto.apagar(usuario)
     
     def alterar_comissao(self,usuario):  #limpa a tela, e chama o método alterar comissão

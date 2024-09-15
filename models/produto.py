@@ -35,6 +35,9 @@ class Produto:
     def apagar(self,usuario): # Apaga o produto
         usuario.tabela_produto()
         
+        while True:
+            escolha = input("Digite o ID do produto que deseja apagar")
+            if re.search("",) # TODO
 
     @property #getters e setters
     def restaurante(self):

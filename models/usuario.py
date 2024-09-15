@@ -133,3 +133,11 @@ class Usuario:
     @senha.setter
     def senha(self,dado: str):
         self.__senha = dado
+    
+    @property
+    def pk(self):
+        return self.__pk
+    
+    @pk.setter
+    def pk(self, dado: int):
+        self.__pk = dado
