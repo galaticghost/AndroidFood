@@ -4,6 +4,23 @@ class Database:
     
     def __init__(self): # Recebe uma conexao
         self.conexao = sqlite3.connect("androidfood.db")
+       # self.executar('''CREATE TABLE
+        #                usuario (
+         #                   pk_usuario INTEGER PRIMARY KEY NOT NULL,
+          #                      restaurante VARCHAR(100) NOT NULL,
+           #                     comissao INTEGER CHECK (comissao >= 0) NOT NULL,
+            #                    email_usuario VARCHAR(200) NOT NULL,
+             #                   senha_usuario VARCHAR(100) NOT NULL,
+              #                  criacao DATE DEFAULT (datetime('now', 'localtime')),
+               #                 ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime'))
+                #        );
+                 #   CREATE TABLE
+                  #  produto (
+                   #     pk_produto INTEGER PRIMARY KEY,
+                    #    nome_produto VARCHAR(100) NOT NULL,
+                     #   preco FLOAT CHECK (preco >= 0.01) NOT NULL,
+                      #  pk_restaurante INTEGER REFERENCES usuario
+                    #);''',None)
 
     def consulta_login(self,email,senha): # chegagem para o login
         sql = 'SELECT email_usuario,senha_usuario FROM usuario WHERE email_usuario = ? AND senha_usuario = ?;' # comando sql
