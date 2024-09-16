@@ -113,7 +113,7 @@ class Usuario:
                 print("O valor digitado não é um número")
                 continue
     
-    def tabela_produto(self): # Mostra os produtos TODO
+    def tabela_produto(self): # Mostra os produtos
         result = self.database.consulta_produto(self.pk) # Retorna os produtos
         if not result: # caso result esteja vazia
             print("Nenhum produto cadastrado!")
@@ -121,8 +121,12 @@ class Usuario:
         else:
             print("ID | Nome | Preço") # printa id nome e preço
             for tupla in result: # para cada tupla 
-                print(f"{tupla[0]} | {tupla[1]} | R${tupla[2]:.2f}\n")
-                return True
+                print(f"{tupla[0]} | {tupla[1]} | R${tupla[2]:.2f}")
+            return True
+    
+    def quantidade_produto(self): # mostra a quantidades de produtos cadastrados no banco na chave do restaurante
+        quantidade_produtos = self.database.quantidade_produto(self.pk)
+        print(f"Quantidade de produtos: {quantidade_produtos[0]}")
     
     @property # getters e setters
     def restaurante(self):

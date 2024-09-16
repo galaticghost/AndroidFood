@@ -78,12 +78,14 @@ class App:
         Utils.limpar_tela()
         print(f"Bem Vindo {usuario.restaurante}!")
         usuario.tabela_produto() # função que retorna todos os produtos do restaurante
+        usuario.quantidade_produto()
+        print(f"A valor da comissão é {usuario.comissao}")
         print("1 -- Cadastrar produto")
         print("2 -- Apagar produto")
         print("3 -- Alterar comissão")
         print("4 -- Logout")
     
-    def cadastro_produto(self,usuario): #limpa a tela, cria uma instância do produto produto e chama o método cadastrar
+    def cadastro_produto(self,usuario): #limpa a tela, cria uma instância do produto e chama o método cadastrar
         Utils.limpar_tela()
         
         produto = Produto(self.database,usuario)

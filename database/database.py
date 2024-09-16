@@ -54,6 +54,11 @@ class Database:
             return False
         else:
             return True
+    
+    def quantidade_produto(self,pk):
+        sql = f'SELECT COUNT() FROM produto WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
 
     def executar(self,sql,tupla): # É só um execute com commit
         self.conexao.execute(sql,tupla)
