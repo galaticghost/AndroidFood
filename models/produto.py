@@ -8,36 +8,54 @@ class Produto:
         
     def cadastrar(self): # cadastro do produto
         while True: # loop para o input
-            self.nome = input("Digite o nome do produto: ")
+            self.nome = input("Digite o nome do produto: ") # Nome
             
             if len(self.nome) < 5:
                 print("O nome do produto deve ter mais de 4 letras")
                 continue
-            elif re.search('[0-9]!@#$%ˆ&()_:.;\'\"\\/=_+-',self.nome) == True: # Qualquer coisa que não for A-Z ou a-z não passa
+            elif len(self.nome) > 100:
+                print("O nome do produto não pode ter mais de 100 caracteres")
+                continue
+            elif re.search('[0-9]!@#$%ˆ&()_:.;\'\"\\/=_+-',self.nome) == True: # Qualquer coisa que não for A-Z ou a-z não passa  MONTEIRO FIXME CACETÓRIOS
                 print("Caractere inválido")
                 continue
             else:
                 break
             
-        while True:
-            self.preco = float(input("Digite o preço do produto: ")) # Resolve isso arthur
+        while True: 
+            try:
+                self.preco = float(input("Digite o preço do produto: ")) #Preço do produto
             
-            if self.preco <= 0:
-                print("O preço do produto deve ser maior do que 0")
+                if self.preco <= 0:
+                    print("O preço do produto deve ser maior do que 0")
+                    continue
+                else:
+                    break
+            except:
+                print("O valor digitado não é um número")
                 continue
-            else:
-                break
             
-        sql = 'INSERT INTO produto(nome_produto,preco,pk_restaurante) VALUES (?,?,?);'
+        sql = 'INSERT INTO produto(nome_produto,preco,pk_restaurante) VALUES (?,?,?);' # Envia os dados para a database
         tupla = (self.nome,self.preco,self.restaurante)
         self.database.executar(sql,tupla)
         
     def apagar(self,usuario): # Apaga o produto
-        usuario.tabela_produto()
+        if usuario.tabela_produto() == False:
+            return None
         
         while True:
-            escolha = input("Digite o ID do produto que deseja apagar")
-            if re.search("",) # TODO
+            try:
+                escolha = input("Digite o ID do produto que deseja apagar: ")
+                if self.database.consulta_produto_restaurante(escolha,self.restaurante) == False: # verifica se o produto selecionado faz parte do restaurante
+                    print(f"O produto com o ID {escolha} não existe")
+                    continue
+                else:
+                    break
+            except:
+                print("Digite um número")
+                continue
+        
+        self.database.executar('DELETE FROM produto WHERE pk_produto = ?',escolha) # deleta o produto
 
     @property #getters e setters
     def restaurante(self):

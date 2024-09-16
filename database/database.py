@@ -2,7 +2,7 @@ import sqlite3
 
 class Database:
     
-    def __init__(self): # Recebe uma conexão e cria as tabelas se elas não existem
+    def __init__(self): # Recebe uma conexão e cria as tabelas se elas não existirem
         self.conexao = sqlite3.connect("androidfood.db")
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS usuario (
                             pk_usuario INTEGER PRIMARY KEY NOT NULL,
@@ -38,6 +38,14 @@ class Database:
         sql = 'SELECT pk_produto,nome_produto,preco FROM produto WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(restaurante,))
         return result.fetchall()
+    
+    def consulta_produto_restaurante(self,pk_produto,pk_restaurante): # consulta se o produto existe naquele restaurante
+        sql = 'SELECT pk_produto FROM produto WHERE pk_produto = ? AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk_produto,pk_restaurante))
+        if not result.fetchone():
+            return False
+        else:
+            return True
     
     def consulta_coluna(self,coluna,tabela,coluna_comparador,item): # eu aprendi parametros do sql por meio desse codigo. eu odeio esse codigo
         sql = f'SELECT {coluna} FROM {tabela} WHERE {coluna_comparador} = ?;' # comando sql
