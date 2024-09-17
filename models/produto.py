@@ -16,11 +16,11 @@ class Produto:
             elif len(self.nome) > 100:
                 print("O nome do produto não pode ter mais de 100 caracteres")
                 continue
-            elif re.search('[0-9]!@#$%ˆ&()_:.;\'\"\\/=_+-',self.nome) == True: # Qualquer coisa que não for A-Z ou a-z não passa  MONTEIRO FIXME CACETÓRIOS
+            elif re.search('[^a-zA-Z ]',self.nome) == None: # Qualquer coisa que não for A-Z, a-z ou espaço não passa
+                break
+            else:
                 print("Caractere inválido")
                 continue
-            else:
-                break
             
         while True: 
             try:
@@ -45,7 +45,7 @@ class Produto:
         
         while True:
             try:
-                escolha = input("Digite o ID do produto que deseja apagar: ")
+                escolha = int(input("Digite o ID do produto que deseja apagar: "))
                 if self.database.consulta_produto_restaurante(escolha,self.restaurante) == False: # verifica se o produto selecionado faz parte do restaurante
                     print(f"O produto com o ID {escolha} não existe")
                     continue
