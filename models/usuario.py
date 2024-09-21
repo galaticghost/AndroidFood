@@ -1,4 +1,6 @@
 import re
+import hashlib
+import time
 
 class Usuario:
     
@@ -33,7 +35,7 @@ class Usuario:
         while True: # recebe e converte o email para lowercase
             self.email = input("Digite o seu email: ").lower()
 
-            if re.search("[\w,]@[\w,].[a-z]",self.email) == None: # verifica se o email é um email
+            if re.search(r"[\w]+@[\w]+[.][a-z]",self.email) == None: # verifica se o email é um email
                 print("O email digitado não é valído")
                 continue
             
@@ -58,20 +60,21 @@ class Usuario:
                 print("A senha não pode ter mais de 100 caracteres")
                 continue
             
-            elif re.search("[A-Z]",self.senha) == None:
+            elif re.search(r"[A-Z]",self.senha) == None:
                 print("Sua senha não possui uma letra maiúscula")
                 continue
             
-            elif re.search("[a-z]",self.senha) == None:
+            elif re.search(r"[a-z]",self.senha) == None:
                 print("Sua senha não possui uma letra minúscula")
                 continue
             
-            elif re.search("[0-9]",self.senha) == None:
+            elif re.search(r"[0-9]",self.senha) == None:
                 print("Sua senha não possui nenhum número")
                 continue
             #Se passar pelos testes
             else:
-                 # Eu queria criptografar com hash mas nao deu
+                self.senha = hashlib.md5(self.senha.encode())
+                self.senha = self.senha.hexdigest()
                 break
         
         sql = f'INSERT INTO usuario(restaurante,comissao,email_usuario,senha_usuario) VALUES (?,?,?,?);'
@@ -82,9 +85,12 @@ class Usuario:
         
         self.email = input("Digite o seu email: ").lower()
         self.senha = input("Digite a sua senha: ")
+        self.senha = hashlib.md5(self.senha.encode())
+        self.senha = self.senha.hexdigest()
 
         if self.database.consulta_login(self.email,self.senha) == False: #consulta no banco se o login existe
             print("Usuário inválido")
+            time.sleep(2)
             return False
         else:
             self.database.executar("UPDATE usuario SET ultima_atualizacao = datetime('now','localtime') WHERE email_usuario = ? AND senha_usuario = ?",(self.email,self.senha)) # atualiza a data do ultimo login

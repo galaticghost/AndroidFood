@@ -1,4 +1,6 @@
+from utils.utils import Utils
 import re
+import time
 
 class Produto:
     
@@ -41,6 +43,9 @@ class Produto:
         
     def apagar(self,usuario): # Apaga o produto
         if usuario.tabela_produto() == False:
+            Utils.limpar_tela()
+            print("Nenhum produto cadastrado!")
+            time.sleep(2)
             return None
         
         while True:
@@ -55,7 +60,7 @@ class Produto:
                 print("Digite um número")
                 continue
         
-        self.database.executar('DELETE FROM produto WHERE pk_produto = ?',escolha) # deleta o produto
+        self.database.executar('DELETE FROM produto WHERE pk_produto = ?',(escolha,)) # deleta o produto
 
     @property #getters e setters
     def restaurante(self):
