@@ -1,6 +1,7 @@
 from utils.utils import Utils
 from models.usuario import Usuario
 from models.produto import Produto
+import time
 
 class App:
 
@@ -26,6 +27,7 @@ class App:
                     exit()
                 case _:
                     print("Escolha inválida")
+                    time.sleep(2)
                     continue
     
     def cadastro_usuario(self): # limpa tela, cria uma instancia e executa o cadastro
@@ -64,6 +66,7 @@ class App:
                     break
                 case _:
                     print("Escolha inválida")
+                    time.sleep(2)
                     continue
     
     def __tela_inicial(self): #tela para o menu inicial

@@ -9,7 +9,7 @@ class Usuario:
     
     def cadastro(self):
         while True:
-            self.restaurante = input("Digite o nome do seu restaurante: ")
+            self.restaurante = input("Digite o nome do seu restaurante: ").strip() # nome do restaurante
             
             if len(self.restaurante) <= 10:
                 print("O nome do restaurante deve ter mais de 10 caracteres")
@@ -23,9 +23,13 @@ class Usuario:
 
         while True:
             try: # try e except para evitar valueError
+                #TODO TODO TODO MONTEIRO MOSTRE MAIR COMISSION
                 self.comissao = int(input("Digite o valor da comissão: ")) #Feitoria!
                 if self.comissao < 0:
                     print("O valor da comissão deve ser igual ou maior que 0")
+                    continue
+                elif self.comissao > 100:
+                    print("O valor da comissão não pode ser maior que 100")
                     continue
                 else:
                     break
@@ -33,7 +37,7 @@ class Usuario:
                 print("O valor digitado não é um número")
 
         while True: # recebe e converte o email para lowercase
-            self.email = input("Digite o seu email: ").lower()
+            self.email = input("Digite o seu email: ").lower().strip()
 
             if re.search(r"[\w]+@[\w]+[.][a-z]",self.email) == None: # verifica se o email é um email
                 print("O email digitado não é valído")
@@ -83,7 +87,7 @@ class Usuario:
 
     def login(self):
         
-        self.email = input("Digite o seu email: ").lower()
+        self.email = input("Digite o seu email: ").lower().strip()
         self.senha = input("Digite a sua senha: ")
         self.senha = hashlib.md5(self.senha.encode())
         self.senha = self.senha.hexdigest()
@@ -108,7 +112,7 @@ class Usuario:
             try: # try e except para evitar erros grotescos(valueError)
                 comissao = int(input("Digite o novo valor: "))
             
-                if comissao <= 0:
+                if comissao < 0 or comissao > 100:
                     print("Valor Inválido!")
                     continue
                 else:
