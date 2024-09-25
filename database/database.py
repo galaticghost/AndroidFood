@@ -21,6 +21,13 @@ class Database:
                     );''')
         self.conexao.commit
 
+    def consulta(self,sql,tupla): # NAO USADA
+        result = self.conexao.execute(sql,tupla)
+        if not result.fetchone():
+            return False
+        else:
+            return True
+    
     def consulta_login(self,email,senha): # chegagem para o login
         sql = 'SELECT email_usuario,senha_usuario FROM usuario WHERE email_usuario = ? AND senha_usuario = ?;' # comando sql
         result = self.conexao.execute(sql,(email,senha)) # result recebe os resultados da query

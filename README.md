@@ -15,7 +15,7 @@ ele foi feito com meus dedos.
 - Alteração da Comissão!
 - Logout!
 
-> logout es a mejor funcion jajajajajajajajajajajaja 
+> logout es la mejor funcion jajajajajajajajajajajaja 
 >
 ~Usuário de péssimo caráter
 
