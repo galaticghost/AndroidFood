@@ -79,10 +79,10 @@ class App:
     
     def __painel(self,usuario):
         Utils.limpar_tela()
-        print(f"Bem Vindo {usuario.restaurante}!")
+        print(f"Bem-vindo {usuario.restaurante}!")
         usuario.tabela_produto() # função que retorna todos os produtos do restaurante
         usuario.quantidade_produto()
-        print(f"A valor da comissão é {usuario.comissao}")
+        print(f"O valor da comissão é {usuario.comissao}")
         print("1 -- Cadastrar produto")
         print("2 -- Apagar produto")
         print("3 -- Alterar comissão")

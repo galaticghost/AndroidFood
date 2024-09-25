@@ -23,7 +23,7 @@ class Database:
 
     def consulta_comissao(self): # NAO USADA
         result = self.conexao.execute('SELECT comissao FROM usuario ORDER BY comissao DESC LIMIT 1')
-        result.fetchone()
+        return result.fetchone()
     
     def consulta_login(self,email,senha): # chegagem para o login
         sql = 'SELECT email_usuario,senha_usuario FROM usuario WHERE email_usuario = ? AND senha_usuario = ?;' # comando sql
