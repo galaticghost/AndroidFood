@@ -20,6 +20,6 @@ ele foi feito com meus dedos.
 ~Usuário de péssimo caráter
 
 # Tecnologias
-![Python](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png "python")
-![Sqlite](https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg "sqlite")
-![Computador](https://cdn5.colorir.com/desenhos/color/201908/um-computador-a-casa-o-quarto-1515999.jpg "computador")
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png" alt="Python" width="200"/>
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/38/SQLite370.svg" alt="Sqlite" width="200"/>
+<img src="https://cdn5.colorir.com/desenhos/color/201908/um-computador-a-casa-o-quarto-1515999.jpg" alt="Computador" width="200"/>
