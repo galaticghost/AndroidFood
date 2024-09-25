@@ -23,7 +23,9 @@ class Usuario:
 
         while True:
             try: # try e except para evitar valueError
-                #TODO TODO TODO MONTEIRO MOSTRE MAIR COMISSION
+                result = self.database.consulta_comissao()
+                if not result:
+                    print(f"A maior comissão é {result}")  
                 self.comissao = int(input("Digite o valor da comissão: ")) #Feitoria!
                 if self.comissao < 0:
                     print("O valor da comissão deve ser igual ou maior que 0")
@@ -129,9 +131,9 @@ class Usuario:
             print("Nenhum produto cadastrado!")
             return False
         else:
-            print("ID | Nome | Preço") # printa id nome e preço
+            print (f"{"ID":^8s}|{"Nome":^50s}|{"Preço":^6s}") # printa id nome e preço
             for tupla in result: # para cada tupla 
-                print(f"{tupla[0]} | {tupla[1]} | R${tupla[2]:.2f}")
+                print (f"{tupla[0]:^8d}|{tupla[1]:^50s}|R${tupla[2]:^6.2f}")
             return True
     
     def quantidade_produto(self): # mostra a quantidades de produtos cadastrados no banco na chave do restaurante
