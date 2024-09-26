@@ -131,9 +131,9 @@ class Usuario:
             print("Nenhum produto cadastrado!")
             return False
         else:
-            print (f"{"ID":^6s}|{"Nome":^40s}|{"Preço":^10s}") # printa id nome e preço
+            print (f"{"ID":^6s}|{"Nome":^60s}|{"Preço":^10s}") # printa id nome e preço
             for tupla in result: # para cada tupla 
-                print (f"{tupla[0]:<6d}|{tupla[1]:<40s}| R$ {tupla[2]:<6.2f}")
+                print (f"{tupla[0]:<6d}|{tupla[1]:<60s}| R$ {tupla[2]:<6.2f}")
             return True
     
     def quantidade_produto(self): # mostra a quantidades de produtos cadastrados no banco na chave do restaurante

@@ -15,8 +15,8 @@ class Produto:
             if len(self.nome) < 5:
                 print("O nome do produto deve ter mais de 4 letras")
                 continue
-            elif len(self.nome) > 100:
-                print("O nome do produto não pode ter mais de 100 caracteres")
+            elif len(self.nome) > 50:
+                print("O nome do produto não pode ter mais de 50 caracteres")
                 continue
             elif re.search('[^a-zA-Z ]',self.nome) == None: # Qualquer coisa que não for A-Z, a-z ou espaço não passa
                 break
