@@ -36,12 +36,12 @@ class App:
         usuario = Usuario(self.database)
         usuario.cadastro()
 
-    def login(self): # TODO EU ACHO
+    def login(self): # Limpa tela e faz login
         Utils.limpar_tela()
         
         usuario = Usuario(self.database)
         
-        if usuario.login() == False:
+        if usuario.login() == False: #checa pra ver se o usuario (senha e email na mesma linha) existe no banco
             return False
         else:
             self.__menu_restaurante(usuario)
@@ -81,7 +81,7 @@ class App:
         Utils.limpar_tela()
         print(f"Bem-vindo {usuario.restaurante}!")
         usuario.tabela_produto() # função que retorna todos os produtos do restaurante
-        usuario.quantidade_produto()
+        usuario.quantidade_produto() # função que retorna a quantidade dos produtos cadastrados
         print(f"O valor da comissão é {usuario.comissao}")
         print("1 -- Cadastrar produto")
         print("2 -- Apagar produto")
@@ -95,7 +95,7 @@ class App:
         produto.cadastrar()
     
     def apagar_produto(self,usuario):  #limpa a tela, cria uma instância do produto e chama o método apagar
-        Utils.limpar_tela() # Não funcional
+        Utils.limpar_tela()
         
         produto = Produto(self.database,usuario)
         produto.apagar(usuario)

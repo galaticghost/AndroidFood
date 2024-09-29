@@ -21,7 +21,7 @@ class Database:
                     );''')
         self.conexao.commit
 
-    def consulta_comissao(self): # NAO USADA
+    def consulta_comissao(self): # Consulta a maior comissao e retorna ela
         result = self.conexao.execute('SELECT comissao FROM usuario ORDER BY comissao DESC LIMIT 1')
         return result.fetchone()
     
@@ -59,7 +59,7 @@ class Database:
         else:
             return True
     
-    def quantidade_produto(self,pk):
+    def quantidade_produto(self,pk): # retorna a quantidade de produtos (cada linha da tabela) onde a pk for igual a pk do usuario
         sql = f'SELECT COUNT() FROM produto WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()

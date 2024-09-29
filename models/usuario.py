@@ -23,9 +23,9 @@ class Usuario:
 
         while True:
             try: # try e except para evitar valueError
-                comissao = self.database.consulta_comissao()
-                if comissao:
-                    print(f"A maior comissão é {comissao[0]}")  
+                comissao = self.database.consulta_comissao() # consulta a comissão
+                if comissao: 
+                    print(f"A maior comissão é {comissao[0]}")  # se tiver comissão ele printa isso na tela
                 self.comissao = int(input("Digite o valor da comissão: ")) #Feitoria!
                 if self.comissao < 0:
                     print("O valor da comissão deve ser igual ou maior que 0")
