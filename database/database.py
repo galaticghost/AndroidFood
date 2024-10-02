@@ -34,7 +34,7 @@ class Database:
             return True
         
     def consulta_usuario(self,email,senha): # consulta do login
-        sql = 'SELECT * FROM usuario WHERE email_usuario = ? AND senha_usuario = ?'
+        sql = 'SELECT pk_usuario,restaurante,comissao,email_usuario,senha_usuario FROM usuario WHERE email_usuario = ? AND senha_usuario = ?'
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
