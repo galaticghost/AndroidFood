@@ -27,7 +27,8 @@ class Produto:
         while True: 
             try:
                 self.preco = float(input("Digite o preço do produto: ")) #Preço do produto
-            
+                self.preco = round(self.preco,2)
+                
                 if self.preco <= 0:
                     print("O preço do produto deve ser maior do que 0")
                     continue
