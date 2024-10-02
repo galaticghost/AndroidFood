@@ -23,6 +23,7 @@ class App:
                     else:
                         break # caso o contrário ele finaliza o loop
                 case("3"):
+                    self.database.conexao.close()
                     Utils.limpar_tela() # Opção para finalizar o programa
                     exit()
                 case _:
