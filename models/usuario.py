@@ -17,7 +17,7 @@ class Usuario:
             
             elif len(self.restaurante) > 100:
                 print("O nome do restaurante não deve ter mais de 100 caracteres")
-            
+                continue
             else:
                 break
 
