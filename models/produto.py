@@ -4,7 +4,7 @@ import time
 
 class Produto:
     
-    def __init__(self,database,restaurante): # recebe a Database e a chave primária do usuario(AKA restaurante)
+    def __init__(self,database,restaurante): # recebe a Database e a chave primária do restaurante
         self.database = database
         self.restaurante = restaurante.pk
         
@@ -42,8 +42,8 @@ class Produto:
         tupla = (self.nome,self.preco,self.restaurante)
         self.database.executar(sql,tupla)
         
-    def apagar(self,usuario): # Apaga o produto
-        if usuario.tabela_produto() == False:
+    def apagar(self,restaurante): # Apaga o produto
+        if restaurante.tabela_produto() == False:
             Utils.limpar_tela()
             print("Nenhum produto cadastrado!")
             time.sleep(2)

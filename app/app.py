@@ -1,5 +1,5 @@
 from utils.utils import Utils
-from models.usuario import Usuario
+from models.restaurante import Restaurante
 from models.produto import Produto
 import time
 
@@ -15,7 +15,7 @@ class App:
             escolha = input("Selecione uma opção: ")
             match(escolha):
                 case("1"):
-                    self.cadastro_usuario() # cadastro
+                    self.cadastro_restaurante() # cadastro
                     continue
                 case("2"):
                     if self.login() == False: # login | Caso o email e a senha estiverem errados ele volta para o inicio
@@ -31,39 +31,39 @@ class App:
                     time.sleep(2)
                     continue
     
-    def cadastro_usuario(self): # limpa tela, cria uma instancia e executa o cadastro
+    def cadastro_restaurante(self): # limpa tela, cria uma instancia e executa o cadastro
         Utils.limpar_tela()
 
-        usuario = Usuario(self.database)
-        usuario.cadastro()
+        restaurante = Restaurante(self.database)
+        restaurante.cadastro()
 
     def login(self): # Limpa tela e faz login
         Utils.limpar_tela()
         
-        usuario = Usuario(self.database)
+        restaurante = Restaurante(self.database)
         
-        if usuario.login() == False: #checa pra ver se o usuario (senha e email na mesma linha) existe no banco
+        if restaurante.login() == False: #checa pra ver se o restaurante (senha e email na mesma linha) existe no banco
             return False
         else:
-            self.__menu_restaurante(usuario)
+            self.__menu_restaurante(restaurante)
         
-    def __menu_restaurante(self,usuario): # Tela principal com as opções do restaurante
+    def __menu_restaurante(self,restaurante): # Tela principal com as opções do restaurante
         
         while True: #loop para o input
-            self.__painel(usuario) # Tela com as opções e a tabela dos produtos
+            self.__painel(restaurante) # Tela com as opções e a tabela dos produtos
             escolha = input("Selecione uma opção: ")
             match(escolha):
                 case("1"):
-                    self.cadastro_produto(usuario)
+                    self.cadastro_produto(restaurante)
                     continue
                 case("2"):
-                    self.apagar_produto(usuario)
+                    self.apagar_produto(restaurante)
                     continue
                 case("3"):
-                    self.alterar_comissao(usuario)
+                    self.alterar_comissao(restaurante)
                     continue
                 case("4"):
-                    self.logout(usuario)
+                    self.logout(restaurante)
                     break
                 case _:
                     print("Escolha inválida")
@@ -78,34 +78,34 @@ class App:
         print("2 -- Login")
         print("3 -- Sair")
     
-    def __painel(self,usuario):
+    def __painel(self,restaurante):
         Utils.limpar_tela()
-        print(f"Bem-vindo {usuario.restaurante}!")
-        usuario.tabela_produto() # função que retorna todos os produtos do restaurante
-        usuario.quantidade_produto() # função que retorna a quantidade dos produtos cadastrados
-        print(f"O valor da comissão é {usuario.comissao}")
+        print(f"Bem-vindo {restaurante.restaurante}!")
+        restaurante.tabela_produto() # função que retorna todos os produtos do restaurante
+        restaurante.quantidade_produto() # função que retorna a quantidade dos produtos cadastrados
+        print(f"O valor da comissão é {restaurante.comissao}")
         print("1 -- Cadastrar produto")
         print("2 -- Apagar produto")
         print("3 -- Alterar comissão")
         print("4 -- Logout")
     
-    def cadastro_produto(self,usuario): #limpa a tela, cria uma instância do produto e chama o método cadastrar
+    def cadastro_produto(self,restaurante): #limpa a tela, cria uma instância do produto e chama o método cadastrar
         Utils.limpar_tela()
         
-        produto = Produto(self.database,usuario)
+        produto = Produto(self.database,restaurante)
         produto.cadastrar()
     
-    def apagar_produto(self,usuario):  #limpa a tela, cria uma instância do produto e chama o método apagar
+    def apagar_produto(self,restaurante):  #limpa a tela, cria uma instância do produto e chama o método apagar
         Utils.limpar_tela()
         
-        produto = Produto(self.database,usuario)
-        produto.apagar(usuario)
+        produto = Produto(self.database,restaurante)
+        produto.apagar(restaurante)
     
-    def alterar_comissao(self,usuario):  #limpa a tela, e chama o método alterar comissão
+    def alterar_comissao(self,restaurante):  #limpa a tela, e chama o método alterar comissão
         Utils.limpar_tela()
         
-        usuario.alterar_comissao()
+        restaurante.alterar_comissao()
     
-    def logout(self,usuario): # Deleta o objeto usuario e volta pro menu incial
-        del usuario
+    def logout(self,restaurante): # Deleta o objeto restaurante e volta pro menu incial
+        del restaurante
         self.menu_inicial()
