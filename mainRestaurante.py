@@ -8,7 +8,7 @@ class Main():
     def main():
         database = Database()
         app = App(database)
-        app.menu_inicial()
+        app.menu_inicial_restaurante()
 
 if __name__ == "__main__":
     Main.main()

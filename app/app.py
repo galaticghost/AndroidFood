@@ -1,6 +1,7 @@
 from utils.utils import Utils
 from models.restaurante import Restaurante
 from models.produto import Produto
+from models.usuario import Usuario
 import time
 
 class App:
@@ -8,7 +9,7 @@ class App:
     def __init__(self,database): # Recebe um objeto database
         self.database = database
 
-    def menu_inicial(self): # A função que da início ao programa
+    def menu_inicial_restaurante(self): # A função que da início ao programa
         
         while True: # loop para as opções
             self.__tela_inicial() # Mostra o nome do programa e as opções
@@ -18,7 +19,7 @@ class App:
                     self.cadastro_restaurante() # cadastro
                     continue
                 case("2"):
-                    if self.login() == False: # login | Caso o email e a senha estiverem errados ele volta para o inicio
+                    if self.login_restaurante() == False: # login | Caso o email e a senha estiverem errados ele volta para o inicio
                         continue
                     else:
                         break # caso o contrário ele finaliza o loop
@@ -37,7 +38,7 @@ class App:
         restaurante = Restaurante(self.database)
         restaurante.cadastro()
 
-    def login(self): # Limpa tela e faz login
+    def login_restaurante(self): # Limpa tela e faz login
         Utils.limpar_tela()
         
         restaurante = Restaurante(self.database)
@@ -109,3 +110,25 @@ class App:
     def logout(self,restaurante): # Deleta o objeto restaurante e volta pro menu incial
         del restaurante
         self.menu_inicial()
+        
+    def menu_inicial_usuario(self):
+        while True:
+            self.__tela_inicial()
+            escolha = input("Selecione uma opção: ")
+            match(escolha):
+                case("1"):
+                    self.cadastro_usuario() # cadastro
+                    continue
+                case("2"):
+                    if self.login_usuario() == False: # login | Caso o email e a senha estiverem errados ele volta para o inicio
+                        continue
+                    else:
+                        break # caso o contrário ele finaliza o loop
+                case("3"):
+                    self.database.conexao.close()
+                    Utils.limpar_tela() # Opção para finalizar o programa
+                    exit()
+                case _:
+                    print("Escolha inválida")
+                    time.sleep(2)
+                    continue

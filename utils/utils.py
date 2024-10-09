@@ -93,3 +93,19 @@ class Utils():
                 senha = senha.hexdigest()
                 return senha        
     
+    @staticmethod
+    def verifica_nome_completo(): # verifica o nome do usuario
+        while True:
+            nome_completo = input("Digite o seu nome completo: ")
+            
+            if len(nome_completo) < 11:
+                print("O nome deve ter mais de dez caracteres")
+                continue
+            elif len (nome_completo) > 200:
+                print("O seu nome não pode ter mais de 200 caracteres")
+                continue
+            elif re.search(r"[\w][\s][\w][]",nome_completo): # TODO # Nome mais Sobrenome mais tudo
+                print("")
+                continue
+            else:
+                return nome_completo
