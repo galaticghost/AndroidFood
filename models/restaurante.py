@@ -28,7 +28,7 @@ class Restaurante:
         self.senha = hashlib.md5(self.senha.encode())
         self.senha = self.senha.hexdigest()
 
-        if self.database.consulta_login(self.email,self.senha) == False: #consulta no banco se o login existe
+        if self.database.consulta_login("restaurante",self.email,self.senha) == False: #consulta no banco se o login existe
             print("Usuário inválido")
             time.sleep(2)
             return False

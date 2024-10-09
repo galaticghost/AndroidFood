@@ -19,14 +19,25 @@ class Database:
                         preco FLOAT CHECK (preco >= 0.01) NOT NULL,
                         pk_restaurante INTEGER REFERENCES restaurante
                     );''')
+        self.conexao.execute('''CREATE TABLE IF NOT EXISTS usuario(
+                                pk_usuario INTEGER PRIMARY KEY NOT NULL,
+                                nome_usuario VARCHAR(200) NOT NULL,
+                                email_usuario VARCHAR(200) NOT NULL,
+                                senha_usuario VARCHAR(100) NOT NULL,
+                                criacao DATE DEFAULT (datetime('now', 'localtime')),
+                                ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime'))
+                             );''')
         self.conexao.commit
+
+    def __str__(self):
+        return f"{self.conexao}"
 
     def consulta_comissao(self): # Consulta a maior comissao e retorna ela
         result = self.conexao.execute('SELECT comissao FROM restaurante ORDER BY comissao DESC LIMIT 1')
         return result.fetchone()
     
-    def consulta_login(self,email,senha): # chegagem para o login
-        sql = 'SELECT email_restaurante,senha_restaurante FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?;' # comando sql
+    def consulta_login(self,tabela,email,senha): # chegagem para o login
+        sql = f'SELECT email_{tabela},senha_{tabela} FROM {tabela} WHERE email_{tabela} = ? AND senha_{tabela} = ?;' # comando sql
         result = self.conexao.execute(sql,(email,senha)) # result recebe os resultados da query
         if result.fetchone() == None: # EU ODEIO ESSE FETCHONE. Caso result esteje vazio ele retorna falso 
             return False
@@ -35,6 +46,11 @@ class Database:
         
     def consulta_restaurante(self,email,senha): # consulta do login
         sql = 'SELECT pk_restaurante,restaurante,comissao,email_restaurante,senha_restaurante FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?'
+        result = self.conexao.execute(sql,(email,senha))
+        return result.fetchone()
+    
+    def consulta_usuario(self,email,senha): # consulta do login
+        sql = 'SELECT pk_usuario,nome_usuario,email_usuario,senha_usuario FROM usuario WHERE email_usuario = ? AND senha_usuario = ?'
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     

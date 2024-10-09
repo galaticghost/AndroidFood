@@ -7,6 +7,9 @@ class Produto:
     def __init__(self,database,restaurante): # recebe a Database e a chave primária do restaurante
         self.database = database
         self.restaurante = restaurante.pk
+
+    def __str__(self):
+        return f"{self.restaurante}"
         
     def cadastrar(self): # cadastro do produto
         while True: # loop para o input

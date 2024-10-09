@@ -9,6 +9,9 @@ class App:
     def __init__(self,database): # Recebe um objeto database
         self.database = database
 
+    def __str__(self):
+        return f"É o app"
+
     def menu_inicial_restaurante(self): # A função que da início ao programa
         
         while True: # loop para as opções
@@ -51,7 +54,7 @@ class App:
     def __menu_restaurante(self,restaurante): # Tela principal com as opções do restaurante
         
         while True: #loop para o input
-            self.__painel(restaurante) # Tela com as opções e a tabela dos produtos
+            self.__painel_restaurante(restaurante) # Tela com as opções e a tabela dos produtos
             escolha = input("Selecione uma opção: ")
             match(escolha):
                 case("1"):
@@ -79,7 +82,7 @@ class App:
         print("2 -- Login")
         print("3 -- Sair")
     
-    def __painel(self,restaurante):
+    def __painel_restaurante(self,restaurante):
         Utils.limpar_tela()
         print(f"Bem-vindo {restaurante.restaurante}!")
         restaurante.tabela_produto() # função que retorna todos os produtos do restaurante
@@ -109,7 +112,7 @@ class App:
     
     def logout(self,restaurante): # Deleta o objeto restaurante e volta pro menu incial
         del restaurante
-        self.menu_inicial()
+        self.menu_inicial_restaurante()
         
     def menu_inicial_usuario(self):
         while True:
@@ -132,3 +135,22 @@ class App:
                     print("Escolha inválida")
                     time.sleep(2)
                     continue
+
+    def cadastro_usuario(self): # limpa tela, cria uma instancia e executa o cadastro
+        Utils.limpar_tela()
+
+        usuario = Usuario(self.database)
+        usuario.cadastro()
+    
+    def login_usuario(self):
+        Utils.limpar_tela()
+
+        usuario = Usuario(self.database)
+        
+        if usuario.login() == False: #checa pra ver se o usuario (senha e email na mesma linha) existe no banco
+            return False
+        else:
+            self.__menu_usuario(usuario)
+
+    def __menu_usuario(self,usuario):
+        print("Feitoria!")
