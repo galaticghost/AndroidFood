@@ -79,6 +79,15 @@ class Database:
         sql = f'SELECT COUNT() FROM produto WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
+    
+    def consulta_restaurante_lista(self):
+        sql = 'SELECT pk_restaurante,restaurante FROM restaurante ORDER BY comissao DESC;'
+        result = self.conexao.execute(sql)
+        result = result.fetchall()
+        if not result:
+            return False
+        else:
+            return result
 
     def executar(self,sql,tupla): # É só um execute com commit
         self.conexao.execute(sql,tupla)

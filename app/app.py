@@ -153,4 +153,27 @@ class App:
             self.__menu_usuario(usuario)
 
     def __menu_usuario(self,usuario):
-        print("Feitoria!")
+        Utils.limpar_tela()
+
+        restaurantes = self.database.consulta_restaurante_lista()
+        if restaurantes == False:
+            print("Por enquanto nosso app não possui restaurantes")
+            time.sleep(4)
+            self.__logout_usuario(usuario)
+        else:
+            print("ID|NOME")
+            for restaurante in restaurantes:
+                print(f"{restaurante[0]},{restaurante[1]}")
+            print("Digite o id do restaurante que deseja ver")
+            print("Caso queria sair digite 0")
+        
+        while True:
+            escolha = input("Digite a sua escolha: ")
+
+            if escolha == 0:
+                self.__logout_usuario(usuario)
+                break
+
+    def __logout_usuario(self,usuario):
+        del usuario
+        self.menu_inicial_usuario()
