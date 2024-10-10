@@ -7,6 +7,9 @@ class Usuario():
     def __init__(self,database):
         self.database = database
         
+    def __str__(self):
+        return f"{self.pk},{self.nome},{self.email},{self.senha}"
+        
     def cadastro(self):
         
         self.nome = Utils.verifica_nome_completo()

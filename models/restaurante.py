@@ -5,8 +5,9 @@ from utils.utils import Utils
 
 class Restaurante:
     
-    def __init__(self,database): # o restaurante recebe uma instancia de Database
+    def __init__(self,database,pk = None): # o restaurante recebe uma instancia de Database
         self.database = database
+        self.pk = pk
     
     def cadastro(self):
         self.restaurante = Utils.verifica_restaurante_nome()

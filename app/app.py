@@ -153,27 +153,68 @@ class App:
             self.__menu_usuario(usuario)
 
     def __menu_usuario(self,usuario):
+        restaurante_id = []
+        restaurantes = self.database.consulta_restaurante_lista()
+        
+        while True:
+            restaurante_id = self.__painel_usuario(usuario,restaurantes,restaurante_id)
+
+            escolha = input("Digite a sua escolha: ")
+
+            if escolha == "0":
+                self.__logout_usuario(usuario)
+                break
+            elif int(escolha) in restaurante_id:
+                self.__catalogo(escolha)
+                continue
+            else:
+                print("Escolha inválida")
+                time.sleep(2)
+                continue
+            
+    def __catalogo(self,pk):
+        Utils.limpar_tela()
+        restaurante = Restaurante(self.database,pk)
+        restaurante.tabela_produto()
+        print("Digite A para abandonar a compra")
+        print("Digite F para finalizar a compra")
+        
+        escolha = input("Digite a sua escolha: ")
+        
+        if escolha.upper() == "A":
+            pass
+        elif escolha.upper() == "F":
+            pass
+        elif 1 == 1:
+            print("1 é um")
+        else:
+            print("Escolha inválida")
+            time.sleep(2)
+                
+            
+    def __painel_usuario(self,usuario,restaurantes,restaurante_id):
         Utils.limpar_tela()
 
-        restaurantes = self.database.consulta_restaurante_lista()
         if restaurantes == False:
             print("Por enquanto nosso app não possui restaurantes")
             time.sleep(4)
             self.__logout_usuario(usuario)
         else:
-            print("ID|NOME")
+            destaques = 0
+            print(f"|{"ID":^6s}|{"Nome":^60s}|")
             for restaurante in restaurantes:
-                print(f"{restaurante[0]},{restaurante[1]}")
+                if destaques < 3:
+                    print(f"|\033[35m{str(restaurante[0]):^6s}\033[0m|\033[35m{restaurante[1]:^60s}\033[0m|")
+                    restaurante_id.append(restaurante[0])
+                    destaques += 1 
+                else:
+                    print(f"|\033[31m{str(restaurante[0]):^6s}\033[0m|\033[94m{restaurante[1]:^60s}\033[0m|")
+                    restaurante_id.append(restaurante[0])        
+            
             print("Digite o id do restaurante que deseja ver")
             print("Caso queria sair digite 0")
+            return restaurante_id
         
-        while True:
-            escolha = input("Digite a sua escolha: ")
-
-            if escolha == 0:
-                self.__logout_usuario(usuario)
-                break
-
     def __logout_usuario(self,usuario):
         del usuario
         self.menu_inicial_usuario()
