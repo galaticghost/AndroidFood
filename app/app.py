@@ -193,12 +193,13 @@ class App:
                 while True:
                     try:
                         quantidade = int(input("Digite a quantidade: "))
-                        produto = Produto(pk,escolha,quantidade)
-                        usuario.lista(produto)
-                        break
                     except:
                         print("Quantidade inválida")
                         continue
+                    produto = Produto(self.database,pk)
+                    produto.set_produto(pk,escolha,quantidade)
+                    usuario.lista(produto)
+                    print (usuario.list)
             else:
                 print("Escolha inválida")
                 time.sleep(2)

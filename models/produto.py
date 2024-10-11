@@ -4,18 +4,17 @@ import time
 
 class Produto:
     
-    def __init__(self,database,restaurante,pk = None,quantidade = None): # recebe a Database e a chave primária do restaurante
+    def __init__(self,database,restaurante): # recebe a Database e a chave primária do restaurante
         self.database = database
         try:
             self.__restaurante = restaurante.pk
         except:
             self.__restaurante = restaurante
-        self.__pk = pk
-        self.__quantidade = quantidade
 
-    def __str__(self):
-        return f"{self.restaurante}"
-        
+
+    def __repr__(self):
+        return f"{self.pk},{self.quantidade},{self.nome},{self.preco},{self.restaurante}"
+
     def cadastrar(self): # cadastro do produto
         while True: # loop para o input
             self.nome = input("Digite o nome do produto: ") # Nome
@@ -71,6 +70,16 @@ class Produto:
         
         self.database.executar('DELETE FROM produto WHERE pk_produto = ?',(escolha,)) # deleta o produto
 
+    def set_produto(self,pk_restaurante,pk_produto,quantidade):
+        result = self.database.consulta_produto_one(pk_restaurante,pk_produto)
+        if result is None:
+            raise Exception("O produto não se encontra no sistema")
+        else:
+            self.__pk = pk_produto
+            self.__nome = result[0]
+            self.__preco = result[1]
+            self.quantidade = quantidade
+
     @property #getters e setters
     def restaurante(self):
         return self.__restaurante
@@ -102,3 +111,11 @@ class Produto:
     @pk.setter
     def pk(self,dado : float):
         self.__pk = dado
+
+    @property
+    def quantidade(self):
+        return self.__quantidade
+    
+    @quantidade.setter
+    def quantidade(self,dado : float):
+        self.__quantidade = dado

@@ -55,10 +55,15 @@ class Database:
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
-    def consulta_produto(self,restaurante): # consulta do produto
+    def consulta_produto(self,pk_restaurante): # consulta do produto
         sql = 'SELECT pk_produto,nome_produto,preco FROM produto WHERE pk_restaurante = ?;'
-        result = self.conexao.execute(sql,(restaurante,))
+        result = self.conexao.execute(sql,(pk_restaurante,))
         return result.fetchall()
+    
+    def consulta_produto_one(self,pk_restaurante,pk_produto):
+        sql = 'SELECT nome_produto,preco FROM produto WHERE pk_restaurante = ? AND pk_produto = ?;'
+        result = self.conexao.execute(sql,(pk_restaurante,pk_produto))
+        return result.fetchone()
     
     def consulta_produto_restaurante(self,pk_produto,pk_restaurante): # consulta se o produto existe naquele restaurante
         sql = 'SELECT pk_produto FROM produto WHERE pk_produto = ? AND pk_restaurante = ?;'

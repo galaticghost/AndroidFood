@@ -46,3 +46,4 @@ class Usuario():
             self.list.remove(produto)
         else: 
             self.list.append(produto)
+            print (self.list)
