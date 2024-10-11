@@ -6,6 +6,7 @@ class Usuario():
     
     def __init__(self,database):
         self.database = database
+        self.list = []
         
     def __str__(self):
         return f"{self.pk},{self.nome},{self.email},{self.senha}"
@@ -37,3 +38,11 @@ class Usuario():
             self.nome = result[1]
             
             return True
+
+    def lista(self,produto):
+        if produto.pk in self.list:
+            if produto.quantidade == 0:
+                self.list.remove(produto)
+            self.list.remove(produto)
+        else: 
+            self.list.append(produto)

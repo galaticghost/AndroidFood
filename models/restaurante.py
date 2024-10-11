@@ -69,11 +69,21 @@ class Restaurante:
             print (f"{"ID":^6s}|{"Nome":^60s}|{"Preço":^10s}") # printa id nome e preço
             for tupla in result: # para cada tupla 
                 print (f"{tupla[0]:<6d}|{tupla[1]:<60s}| R$ {tupla[2]:<6.2f}")
-            return True
+            return result
     
     def quantidade_produto(self): # mostra a quantidades de produtos cadastrados no banco na chave do restaurante
         quantidade_produtos = self.database.quantidade_produto(self.pk)
         print(f"Quantidade de produtos: {quantidade_produtos[0]}")
+        
+    def update_tem_produto(self,condicao): # Atualiza a coluna tem produtos
+        if condicao == "cadastrar": # 1
+            self.database.executar("UPDATE restaurante SET tem_produtos = ? WHERE pk_restaurante = ?",(1,self.pk))
+            return None
+        elif condicao == "apagar": # 0
+            result = self.database.quantidade_produto(self.pk) # ve se tem produtos
+            if result[0] is 0:
+                self.database.executar("UPDATE restaurante SET tem_produtos = ? WHERE pk_restaurante = ?",(0,self.pk))
+            return None
     
     @property # getters e setters
     def restaurante(self):

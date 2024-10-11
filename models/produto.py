@@ -4,9 +4,14 @@ import time
 
 class Produto:
     
-    def __init__(self,database,restaurante): # recebe a Database e a chave primária do restaurante
+    def __init__(self,database,restaurante,pk = None,quantidade = None): # recebe a Database e a chave primária do restaurante
         self.database = database
-        self.restaurante = restaurante.pk
+        try:
+            self.__restaurante = restaurante.pk
+        except:
+            self.__restaurante = restaurante
+        self.__pk = pk
+        self.__quantidade = quantidade
 
     def __str__(self):
         return f"{self.restaurante}"
@@ -89,3 +94,11 @@ class Produto:
     @preco.setter
     def preco(self,dado : float):
         self.__preco = dado
+        
+    @property
+    def pk(self):
+        return self.__pk
+    
+    @pk.setter
+    def pk(self,dado : float):
+        self.__pk = dado

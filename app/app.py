@@ -98,12 +98,14 @@ class App:
         
         produto = Produto(self.database,restaurante)
         produto.cadastrar()
+        restaurante.update_tem_produto("cadastrar")
     
     def apagar_produto(self,restaurante):  #limpa a tela, cria uma instância do produto e chama o método apagar
         Utils.limpar_tela()
         
         produto = Produto(self.database,restaurante)
         produto.apagar(restaurante)
+        restaurante.update_tem_produto("apagar")
     
     def alterar_comissao(self,restaurante):  #limpa a tela, e chama o método alterar comissão
         Utils.limpar_tela()
@@ -154,7 +156,7 @@ class App:
 
     def __menu_usuario(self,usuario):
         restaurante_id = []
-        restaurantes = self.database.consulta_restaurante_lista()
+        restaurantes = self.database.consulta_restaurante_lista() # Só recebe restaurantes com produtos
         
         while True:
             restaurante_id = self.__painel_usuario(usuario,restaurantes,restaurante_id)
@@ -165,31 +167,42 @@ class App:
                 self.__logout_usuario(usuario)
                 break
             elif int(escolha) in restaurante_id:
-                self.__catalogo(escolha)
+                self.__catalogo(escolha,usuario)
                 continue
             else:
                 print("Escolha inválida")
                 time.sleep(2)
                 continue
             
-    def __catalogo(self,pk):
+    def __catalogo(self,pk,usuario):
         Utils.limpar_tela()
         restaurante = Restaurante(self.database,pk)
-        restaurante.tabela_produto()
+        result = restaurante.tabela_produto()
+        
         print("Digite A para abandonar a compra")
         print("Digite F para finalizar a compra")
         
-        escolha = input("Digite a sua escolha: ")
-        
-        if escolha.upper() == "A":
-            pass
-        elif escolha.upper() == "F":
-            pass
-        elif 1 == 1:
-            print("1 é um")
-        else:
-            print("Escolha inválida")
-            time.sleep(2)
+        while True:
+            escolha = input("Digite a sua escolha: ")
+            
+            if escolha.upper() == "A":
+                return None
+            elif escolha.upper() == "F":
+                pass
+            elif escolha in str(result):
+                while True:
+                    try:
+                        quantidade = int(input("Digite a quantidade: "))
+                        produto = Produto(pk,escolha,quantidade)
+                        usuario.lista(produto)
+                        break
+                    except:
+                        print("Quantidade inválida")
+                        continue
+            else:
+                print("Escolha inválida")
+                time.sleep(2)
+                continue
                 
             
     def __painel_usuario(self,usuario,restaurantes,restaurante_id):

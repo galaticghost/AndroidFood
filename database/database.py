@@ -11,7 +11,8 @@ class Database:
                                 email_restaurante VARCHAR(200) NOT NULL,
                                 senha_restaurante VARCHAR(100) NOT NULL,
                                 criacao DATE DEFAULT (datetime('now', 'localtime')),
-                                ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime'))
+                                ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime')),
+                                tem_produtos bool DEFAULT 0
                         );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS produto (
                         pk_produto INTEGER PRIMARY KEY,
@@ -81,7 +82,7 @@ class Database:
         return result.fetchone()
     
     def consulta_restaurante_lista(self):
-        sql = 'SELECT pk_restaurante,restaurante FROM restaurante ORDER BY comissao DESC;'
+        sql = 'SELECT pk_restaurante,restaurante FROM restaurante WHERE tem_produtos = 1 ORDER BY comissao DESC;'
         result = self.conexao.execute(sql)
         result = result.fetchall()
         if not result:
