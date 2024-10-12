@@ -6,7 +6,7 @@ class Usuario():
     
     def __init__(self,database):
         self.database = database
-        self.list = []
+        self.__list = []
         
     def __str__(self):
         return f"{self.pk},{self.nome},{self.email},{self.senha}"
@@ -40,10 +40,59 @@ class Usuario():
             return True
 
     def lista(self,produto):
-        if produto.pk in self.list:
-            if produto.quantidade == 0:
-                self.list.remove(produto)
-            self.list.remove(produto)
-        else: 
-            self.list.append(produto)
-            print (self.list)
+        for item in self.list:
+            if item.pk == produto.pk:
+                if produto.quantidade == 0:
+                    self.list.remove(item)
+                    return None
+                self.list.remove(item)
+                break
+        self.list.append(produto)
+
+    def venda(self):
+        valor_total = 0
+        for produto in self.list:
+            total = (produto.preco * produto.quantidade)
+            valor_total += total
+        self.database.executar("INSERT INTO venda(valor,pk_usuario) VALUES (?,?)",(valor_total,self.pk))
+        
+        result = self.database.consulta_pk_venda(self.pk)
+        pk_venda = result[0]
+
+        for produto in self.list:
+            self.database.executar("INSERT INTO venda_produto(pk_venda,pk_produto,quantidade,valor_total) VALUES (?,?,?,?)",(pk_venda,produto.pk,produto.quantidade,produto.preco * produto.quantidade))
+
+    def pedido_concluido(self):
+        pass
+
+    @property
+    def nome(self):
+        return self.__nome
+    
+    @nome.setter
+    def nome(self,dado : str):
+        self.__nome = dado.title()
+
+    @property
+    def email(self):
+        return self.__email
+    
+    @email.setter
+    def email(self,dado : str):
+        self.__email = dado.lower()
+
+    @property
+    def senha(self):
+        return self.__senha
+    
+    @senha.setter
+    def senha(self, dado: str):
+        self.__senha = dado
+
+    @property
+    def list(self):
+        return self.__list
+    
+    @list.setter
+    def list(self,dado):
+        self.__list = dado

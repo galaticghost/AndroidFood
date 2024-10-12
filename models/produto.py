@@ -78,7 +78,7 @@ class Produto:
             self.__pk = pk_produto
             self.__nome = result[0]
             self.__preco = result[1]
-            self.quantidade = quantidade
+            self.__quantidade = quantidade
 
     @property #getters e setters
     def restaurante(self):

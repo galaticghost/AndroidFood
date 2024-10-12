@@ -96,7 +96,7 @@ class Utils():
     @staticmethod
     def verifica_nome_completo(): # verifica o nome do usuario
         while True:
-            nome_completo = input("Digite o seu nome completo: ")
+            nome_completo = input("Digite o seu nome completo: ").title()
             
             if len(nome_completo) < 11:
                 print("O nome deve ter mais de dez caracteres")

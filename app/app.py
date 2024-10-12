@@ -40,6 +40,7 @@ class App:
 
         restaurante = Restaurante(self.database)
         restaurante.cadastro()
+        del restaurante
 
     def login_restaurante(self): # Limpa tela e faz login
         Utils.limpar_tela()
@@ -143,6 +144,7 @@ class App:
 
         usuario = Usuario(self.database)
         usuario.cadastro()
+        del usuario
     
     def login_usuario(self):
         Utils.limpar_tela()
@@ -173,39 +175,7 @@ class App:
                 print("Escolha inválida")
                 time.sleep(2)
                 continue
-            
-    def __catalogo(self,pk,usuario):
-        Utils.limpar_tela()
-        restaurante = Restaurante(self.database,pk)
-        result = restaurante.tabela_produto()
-        
-        print("Digite A para abandonar a compra")
-        print("Digite F para finalizar a compra")
-        
-        while True:
-            escolha = input("Digite a sua escolha: ")
-            
-            if escolha.upper() == "A":
-                return None
-            elif escolha.upper() == "F":
-                pass
-            elif escolha in str(result):
-                while True:
-                    try:
-                        quantidade = int(input("Digite a quantidade: "))
-                    except:
-                        print("Quantidade inválida")
-                        continue
-                    produto = Produto(self.database,pk)
-                    produto.set_produto(pk,escolha,quantidade)
-                    usuario.lista(produto)
-                    print (usuario.list)
-            else:
-                print("Escolha inválida")
-                time.sleep(2)
-                continue
-                
-            
+
     def __painel_usuario(self,usuario,restaurantes,restaurante_id):
         Utils.limpar_tela()
 
@@ -228,6 +198,59 @@ class App:
             print("Digite o id do restaurante que deseja ver")
             print("Caso queria sair digite 0")
             return restaurante_id
+            
+    def __catalogo(self,pk,usuario): 
+        restaurante = Restaurante(self.database,pk)
+
+        while True:
+            Utils.limpar_tela()
+            result = restaurante.tabela_produto()
+            pks = [tupla[0] for tupla in result]
+            print("Digite A para abandonar a compra")
+            print("Digite F para finalizar a compra")
+            
+            if not usuario.list:
+                print("Carrinho vazio")
+            else:
+                print("Carrinho:")
+                for produto in usuario.list:
+                    print(f"ID: {produto.pk} | Nome: {produto.nome} | Preço: R${produto.preco * produto.quantidade:.2f} | Quantidade: {produto.quantidade}")
+
+            escolha = input("Digite a sua escolha: ")
+            
+            if escolha.upper() == "A":
+                usuario.list = []
+                break
+
+            elif escolha.upper() == "F":
+                if not usuario.list:
+                    print("Você não cadastrou nenhum produto no carrinho")
+                    time.sleep(3)
+                    continue
+
+                usuario.venda()
+                
+                usuario.pedido_concluido()
+                
+                break
+            
+            try:
+                if int(escolha) in pks:
+                    while True:
+                        try:
+                            quantidade = int(input("Digite a quantidade: "))
+                            break
+                        except:
+                            print("Quantidade inválida")
+                            continue
+                    produto = Produto(self.database,pk)
+                    produto.set_produto(pk,escolha,quantidade)
+                    usuario.lista(produto)
+                    continue
+            except:
+                print("Escolha inválida")
+                time.sleep(2)
+                continue
         
     def __logout_usuario(self,usuario):
         del usuario

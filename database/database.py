@@ -13,21 +13,34 @@ class Database:
                                 criacao DATE DEFAULT (datetime('now', 'localtime')),
                                 ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime')),
                                 tem_produtos bool DEFAULT 0
-                        );''')
+                            );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS produto (
-                        pk_produto INTEGER PRIMARY KEY,
-                        nome_produto VARCHAR(100) NOT NULL,
-                        preco FLOAT CHECK (preco >= 0.01) NOT NULL,
-                        pk_restaurante INTEGER REFERENCES restaurante
-                    );''')
+                            pk_produto INTEGER PRIMARY KEY,
+                            nome_produto VARCHAR(100) NOT NULL,
+                            preco NUMERIC CHECK (preco > 0) NOT NULL,
+                            pk_restaurante INTEGER REFERENCES restaurante
+                            );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS usuario(
-                                pk_usuario INTEGER PRIMARY KEY NOT NULL,
-                                nome_usuario VARCHAR(200) NOT NULL,
-                                email_usuario VARCHAR(200) NOT NULL,
-                                senha_usuario VARCHAR(100) NOT NULL,
-                                criacao DATE DEFAULT (datetime('now', 'localtime')),
-                                ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime'))
-                             );''')
+                            pk_usuario INTEGER PRIMARY KEY NOT NULL,
+                            nome_usuario VARCHAR(200) NOT NULL,
+                            email_usuario VARCHAR(200) NOT NULL,
+                            senha_usuario VARCHAR(100) NOT NULL,
+                            criacao DATE DEFAULT (datetime('now', 'localtime')),
+                            ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime'))
+                            );''')
+        self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda(
+                            pk_venda INTEGER PRIMARY KEY NOT NULL,
+                            valor NUMERIC CHECK (preco > 0) NOT NULL,
+                            pk_usuario INTEGER REFERENCES usuario,
+                            criacao DATE DEFAULT(datetime('now', 'localtime'))
+                            );''')
+        self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda_produto(
+                            pk_venda_produto INTEGER PRIMARY KEY NOT NULL,
+                            pk_venda INTEGER REFERENCES venda,
+                            pk_produto INTEGER REFERENCES produto,
+                            quantidade INTEGER NOT NULL,
+                            valor_total NUMERIC CHECK(valor_total > 0) NOT NULL
+                            );''')
         self.conexao.commit
 
     def __str__(self):
@@ -60,7 +73,7 @@ class Database:
         result = self.conexao.execute(sql,(pk_restaurante,))
         return result.fetchall()
     
-    def consulta_produto_one(self,pk_restaurante,pk_produto):
+    def consulta_produto_one(self,pk_restaurante,pk_produto): # consulta um único produto
         sql = 'SELECT nome_produto,preco FROM produto WHERE pk_restaurante = ? AND pk_produto = ?;'
         result = self.conexao.execute(sql,(pk_restaurante,pk_produto))
         return result.fetchone()
@@ -80,13 +93,18 @@ class Database:
             return False
         else:
             return True
-    
-    def quantidade_produto(self,pk): # retorna a quantidade de produtos (cada linha da tabela) onde a pk for igual a pk do restaurante
-        sql = f'SELECT COUNT() FROM produto WHERE pk_restaurante = ?;'
+        
+    def consulta_pk_venda(self,pk): # Consulta o pk da venda mais recente feita pelo usuario
+        sql = 'SELECT pk_venda FROM venda WHERE pk_usuario = ? ORDER BY criacao DESC LIMIT 1;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def consulta_restaurante_lista(self):
+    def quantidade_produto(self,pk): # retorna a quantidade de produtos (cada linha da tabela) onde a pk for igual a pk do restaurante
+        sql = 'SELECT COUNT() FROM produto WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def consulta_restaurante_lista(self): # retorna a pk e o nome do restaurante que tenham pelo menos um produto cadastrado por ordem decrescente da comissao 
         sql = 'SELECT pk_restaurante,restaurante FROM restaurante WHERE tem_produtos = 1 ORDER BY comissao DESC;'
         result = self.conexao.execute(sql)
         result = result.fetchall()
