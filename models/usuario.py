@@ -39,33 +39,40 @@ class Usuario():
             
             return True
 
-    def lista(self,produto):
+    def lista(self,produto): # gerencia a lista do cliente
         for item in self.list:
-            if item.pk == produto.pk:
-                if produto.quantidade == 0:
-                    self.list.remove(item)
+            if item.pk == produto.pk: # Se o produto estiver já cadastrado na lista
+                if produto.quantidade <= 0: # E se a quantidade for zero (ou menor)
+                    self.list.remove(item) # Ele remove o item e termina a iteração
                     return None
-                self.list.remove(item)
+                self.list.remove(item) # Remove o produto e quebra a iteração
                 break
-        self.list.append(produto)
+        self.list.append(produto) # Adiciona o novo produto (ou atualiza)
 
-    def venda(self):
-        valor_total = 0
-        for produto in self.list:
+    def venda(self): # Insira a venda no banco de dados
+        valor_total = 0 
+        for produto in self.list: # Para cada produto na lista
             total = (produto.preco * produto.quantidade)
-            valor_total += total
-        self.database.executar("INSERT INTO venda(valor,pk_usuario) VALUES (?,?)",(valor_total,self.pk))
-        
-        result = self.database.consulta_pk_venda(self.pk)
+            valor_total += total # adquire o valor e soma ao valor total
+        self.database.executar("INSERT INTO venda(valor,pk_usuario) VALUES (?,?)",(valor_total,self.pk)) # Insere no banco de dados a venda
+         
+        result = self.database.consulta_pk_venda(self.pk) # Depois consulta a chave primária da venda
         pk_venda = result[0]
 
-        for produto in self.list:
+        for produto in self.list: # E gera uma relação venda-produto e insere no banco de dados no banco de dados  
             self.database.executar("INSERT INTO venda_produto(pk_venda,pk_produto,quantidade,valor_total) VALUES (?,?,?,?)",(pk_venda,produto.pk,produto.quantidade,produto.preco * produto.quantidade))
 
-    def pedido_concluido(self):
-        pass
+    def pedido_concluido(self,restaurante): # Vou fazer depois TODO
+        print(f"Nome: {restaurante}")
+        print(f"|{"Nome":^60s}|{"Valor":^9s}|{"Quantidade"}|")
+        for produto in self.list:
+            print(f"|{produto.nome:<60s}|R$ {produto.preco:<6.2f}|{produto.quantidade:<10d}|")
+        print(f"Valor total: R${9}")
+        input('Pressione <<ENTER>> para voltar para a tela dos restaurantes ')
+        self.list = []
+        return None
 
-    @property
+    @property #getters e setters
     def nome(self):
         return self.__nome
     

@@ -168,7 +168,7 @@ class App:
             if escolha == "0":
                 self.__logout_usuario(usuario)
                 break
-            elif int(escolha) in restaurante_id:
+            elif int(escolha) in restaurante_id: # Se a escolha for um dos ids na lista dos restaurantes
                 self.__catalogo(escolha,usuario)
                 continue
             else:
@@ -176,65 +176,63 @@ class App:
                 time.sleep(2)
                 continue
 
-    def __painel_usuario(self,usuario,restaurantes,restaurante_id):
+    def __painel_usuario(self,usuario,restaurantes,restaurante_id): # Mostra os restaurantes e as opções
         Utils.limpar_tela()
 
-        if restaurantes == False:
+        if restaurantes == False: # Caso não tenha nenhum restaurante com produtos no banco de dados
             print("Por enquanto nosso app não possui restaurantes")
             time.sleep(4)
-            self.__logout_usuario(usuario)
+            self.__logout_usuario(usuario) # Logout
         else:
-            destaques = 0
+            destaques = 0 
             print(f"|{"ID":^6s}|{"Nome":^60s}|")
-            for restaurante in restaurantes:
-                if destaques < 3:
+            for restaurante in restaurantes: # Printa os restaurantes e puxa os ids para uma lista
+                if destaques < 3: # Printa os três restaurantes com a maior comissão com uma cor diferente
                     print(f"|\033[35m{str(restaurante[0]):^6s}\033[0m|\033[35m{restaurante[1]:^60s}\033[0m|")
                     restaurante_id.append(restaurante[0])
-                    destaques += 1 
+                    destaques += 1 # adiciona no contador
                 else:
                     print(f"|\033[31m{str(restaurante[0]):^6s}\033[0m|\033[94m{restaurante[1]:^60s}\033[0m|")
                     restaurante_id.append(restaurante[0])        
             
             print("Digite o id do restaurante que deseja ver")
             print("Caso queria sair digite 0")
-            return restaurante_id
+            return restaurante_id # Retorna a lista
             
-    def __catalogo(self,pk,usuario): 
-        restaurante = Restaurante(self.database,pk)
+    def __catalogo(self,pk,usuario): # Mostra o catálogo de comidas do restaurante
+        restaurante = Restaurante(self.database,pk) # Cria uma instância de restaurante
 
         while True:
             Utils.limpar_tela()
-            result = restaurante.tabela_produto()
-            pks = [tupla[0] for tupla in result]
+            result = restaurante.tabela_produto() # Recebe e printa os produtos
+            pks = [tupla[0] for tupla in result] # Inseri as pks dos produtos em uma lista
             print("Digite A para abandonar a compra")
             print("Digite F para finalizar a compra")
             
-            if not usuario.list:
+            if not usuario.list: # se o carrinho estiver vazio
                 print("Carrinho vazio")
             else:
                 print("Carrinho:")
-                for produto in usuario.list:
+                for produto in usuario.list: # para cada produto no carrinho se printa ele
                     print(f"ID: {produto.pk} | Nome: {produto.nome} | Preço: R${produto.preco * produto.quantidade:.2f} | Quantidade: {produto.quantidade}")
 
             escolha = input("Digite a sua escolha: ")
             
-            if escolha.upper() == "A":
+            if escolha.upper() == "A": # Limpa a lista e encerra o método
                 usuario.list = []
                 break
 
-            elif escolha.upper() == "F":
-                if not usuario.list:
+            elif escolha.upper() == "F": # Finaliza a aplicação
+                if not usuario.list: # Se o carrinho estiver vazio
                     print("Você não cadastrou nenhum produto no carrinho")
                     time.sleep(3)
                     continue
 
-                usuario.venda()
-                
-                usuario.pedido_concluido()
-                
+                usuario.venda() # Insere no banco a venda
+                usuario.pedido_concluido(pk) # Printa os detalhes dela
                 break
             
-            try:
+            try: # Try para evitar ValueErro
                 if int(escolha) in pks:
                     while True:
                         try:
@@ -246,6 +244,10 @@ class App:
                     produto = Produto(self.database,pk)
                     produto.set_produto(pk,escolha,quantidade)
                     usuario.lista(produto)
+                    continue
+                else:
+                    print("Escolha inválida")
+                    time.sleep(2)
                     continue
             except:
                 print("Escolha inválida")
