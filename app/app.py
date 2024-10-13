@@ -241,9 +241,9 @@ class App:
                         except:
                             print("Quantidade inválida")
                             continue
-                    produto = Produto(self.database,pk)
-                    produto.set_produto(pk,escolha,quantidade)
-                    usuario.lista(produto)
+                    produto = Produto(self.database,pk) 
+                    produto.set_produto(pk,escolha,quantidade) # Adiciona os atributos do produto
+                    usuario.lista(produto) # Adiciona (ou remove) o produto do carrinhop
                     continue
                 else:
                     print("Escolha inválida")
