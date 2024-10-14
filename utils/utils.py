@@ -49,7 +49,7 @@ class Utils():
         while True: # recebe e converte o email para lowercase
             email = input("Digite o seu email: ").lower().strip()
 
-            if re.search(r"[\w]+@[\w]+[.][a-z]",email) == None: # verifica se o email é um email
+            if re.search(r"[\w]+@[\w]+[.][a-z][a-z]",email) == None: # verifica se o email é um email
                 print("O email digitado não é valído")
                 continue
             
