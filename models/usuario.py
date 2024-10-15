@@ -63,12 +63,13 @@ class Usuario():
             self.database.executar("INSERT INTO venda_produto(pk_venda,pk_produto,quantidade,valor_total) VALUES (?,?,?,?)",(pk_venda,produto.pk,produto.quantidade,produto.preco * produto.quantidade))
 
     def pedido_concluido(self,pk): # Vou fazer depois TODO
+        Utils.limpar_tela()
         valor_total = 0
-        nome = self.database.consulta_coluna("restaurante","restaurante","pk_restaurante",pk)
-        print(f"Nome: {nome}")
-        print(f"|{"Nome":^60s}|{"Valor":^9s}|{"Quantidade"}|")
+        nome = self.database.consulta_restaurante_nome(pk)
+        print(f"Restaurante: {nome[0]}")
+        print(f"|{"Nome":^60s}|{"Valor":^9s}|{"Quantidade"}")
         for produto in self.list:
-            print(f"|{produto.nome:<60s}|R$ {produto.preco:<6.2f}|{produto.quantidade:<10d}|")
+            print(f"|{produto.nome:<60s}|R$ {produto.preco:<6.2f}|{produto.quantidade:<10d}")
             valor_total += (produto.preco * produto.quantidade)
             time.sleep(0.09)
         print(f"|")
@@ -88,17 +89,20 @@ class Usuario():
             Utils.limpar_tela()
             
             restaurante = self.database.consulta_restaurante_nome(venda[3])
-            print(f"{restaurante[0]:^111s}\n")
+            print(f"\033[31m{restaurante[0]:^111s}\033[0m\n")
 
             produtos = self.database.consulta_venda_produtos(venda[0])
-            print(f"|{"Nome":^60s}|{"Preço individual":^16s}|{"Quantidade":^10s}|{"Preço total":^11s}")
+            print(f" "+"_" * 100+" ")
+            print(f"|"+" " * 100+"|")
+            print(f"|\033[36m{"Nome":^60s}\033[0m|\033[32m{"Preço individual":^16s}\033[0m|\033[35m{"Quantidade":^10s}\033[0m|\033[94m{"Preço total":^11s}\033[0m|")
             for produto in produtos:
-                print(f"|{produto[2]:<60s}|{produto[3]:<16.2f}|{produto[0]:<10d}|R$:{produto[1]:<11.2f}")
+                print(f"|\033[36m{produto[2]:<60s}\033[0m|\033[32m{produto[3]:<16.2f}\033[0m|\033[35m{produto[0]:<10d}\033[0m|\033[94mR$:{produto[1]:<8.2f}\033[0m|")
                 time.sleep(0.08)
+            print(f"|"+"_" * 100+"|")
             print(f"Valor total da compra: R${venda[1]:.2f} ")
             print(f"Data: {venda[2]}")
             
-            print("A -- Anterior")
+            print("\nA -- Anterior")
             print("P -- Próxima")
             print("Pressione <<ENTER>> para voltar para a tela dos restaurantes \n")
             while True:

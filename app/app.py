@@ -159,7 +159,7 @@ class App:
     def __menu_usuario(self,usuario):
         restaurante_id = []
         restaurantes = self.database.consulta_restaurante_lista() # Só recebe restaurantes com produtos
-        
+
         while True:
             restaurante_id = self.__painel_usuario(usuario,restaurantes,restaurante_id)
 
@@ -171,13 +171,18 @@ class App:
             elif escolha.upper() == "H":
                 self.__historico(usuario)
                 continue
-            elif int(escolha) in restaurante_id: # Se a escolha for um dos ids na lista dos restaurantes
-                self.__catalogo(escolha,usuario)
-                continue
-            else:
-                print("Escolha inválida")
-                time.sleep(2)
-                continue
+            try:
+                if int(escolha) in restaurante_id: # Se a escolha for um dos ids na lista dos restaurantes
+                    self.__catalogo(escolha,usuario)
+                    continue
+                else:
+                    print("Escolha inválida")
+                    time.sleep(2)
+                    continue
+            except:
+                    print("Escolha inválida")
+                    time.sleep(2)
+                    continue
 
     def __painel_usuario(self,usuario,restaurantes,restaurante_id): # Mostra os restaurantes e as opções
         Utils.limpar_tela()
@@ -196,7 +201,7 @@ class App:
                     restaurante_id.append(restaurante[0])
                     destaques += 1 # adiciona no contador
                 else:
-                    print(f"|\033[31m{str(restaurante[0]):^6s}\033[0m|\033[94m{restaurante[1]:^60s}\033[0m|")
+                    print(f"|\033[94m{str(restaurante[0]):^6s}\033[0m|\033[94m{restaurante[1]:^60s}\033[0m|")
                     restaurante_id.append(restaurante[0])        
             
             time.sleep(0.09)
