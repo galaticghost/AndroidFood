@@ -81,8 +81,6 @@ class Usuario():
     
     def historico(self,historico):
         index = 0
-
-        print(historico)
         while True:
             venda = historico[index]
 
