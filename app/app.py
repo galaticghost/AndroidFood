@@ -168,6 +168,9 @@ class App:
             if escolha == "0":
                 self.__logout_usuario(usuario)
                 break
+            elif escolha.upper() == "H":
+                self.__historico(usuario)
+                continue
             elif int(escolha) in restaurante_id: # Se a escolha for um dos ids na lista dos restaurantes
                 self.__catalogo(escolha,usuario)
                 continue
@@ -187,6 +190,7 @@ class App:
             destaques = 0 
             print(f"|{"ID":^6s}|{"Nome":^60s}|")
             for restaurante in restaurantes: # Printa os restaurantes e puxa os ids para uma lista
+                time.sleep(0.09)
                 if destaques < 3: # Printa os três restaurantes com a maior comissão com uma cor diferente
                     print(f"|\033[35m{str(restaurante[0]):^6s}\033[0m|\033[35m{restaurante[1]:^60s}\033[0m|")
                     restaurante_id.append(restaurante[0])
@@ -195,8 +199,10 @@ class App:
                     print(f"|\033[31m{str(restaurante[0]):^6s}\033[0m|\033[94m{restaurante[1]:^60s}\033[0m|")
                     restaurante_id.append(restaurante[0])        
             
+            time.sleep(0.09)
             print("Digite o id do restaurante que deseja ver")
-            print("Caso queria sair digite 0")
+            print("Caso deseje ver o histórico das compras digite \"H\"")
+            print("Caso deseje sair digite 0")
             return restaurante_id # Retorna a lista
             
     def __catalogo(self,pk,usuario): # Mostra o catálogo de comidas do restaurante
@@ -228,7 +234,7 @@ class App:
                     time.sleep(3)
                     continue
 
-                usuario.venda() # Insere no banco a venda
+                usuario.venda(pk) # Insere no banco a venda
                 usuario.pedido_concluido(pk) # Printa os detalhes dela
                 break
             
@@ -243,7 +249,7 @@ class App:
                             continue
                     produto = Produto(self.database,pk) 
                     produto.set_produto(pk,escolha,quantidade) # Adiciona os atributos do produto
-                    usuario.lista(produto) # Adiciona (ou remove) o produto do carrinhop
+                    usuario.lista(produto) # Adiciona (ou remove) o produto do carrinho
                     continue
                 else:
                     print("Escolha inválida")
@@ -253,6 +259,15 @@ class App:
                 print("Escolha inválida")
                 time.sleep(2)
                 continue
+
+    def __historico(self,usuario):
+        Utils.limpar_tela()
+        historico = self.database.consulta_venda(usuario.pk)
+        if len(historico) == 0:
+            print("Seu histórico está vazio")
+            input("Pressione <<ENTER>> para voltar para a tela dos restaurantes")
+        else:
+            usuario.historico(historico)
         
     def __logout_usuario(self,usuario):
         del usuario

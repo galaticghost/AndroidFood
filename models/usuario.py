@@ -49,12 +49,12 @@ class Usuario():
                 break
         self.list.append(produto) # Adiciona o novo produto (ou atualiza)
 
-    def venda(self): # Insira a venda no banco de dados
+    def venda(self,restaurante_pk): # Insira a venda no banco de dados
         valor_total = 0 
         for produto in self.list: # Para cada produto na lista
             total = (produto.preco * produto.quantidade)
             valor_total += total # adquire o valor e soma ao valor total
-        self.database.executar("INSERT INTO venda(valor,pk_usuario) VALUES (?,?)",(valor_total,self.pk)) # Insere no banco de dados a venda
+        self.database.executar("INSERT INTO venda(valor,pk_usuario,pk_restaurante) VALUES (?,?,?)",(valor_total,self.pk,restaurante_pk)) # Insere no banco de dados a venda
          
         result = self.database.consulta_pk_venda(self.pk) # Depois consulta a chave primária da venda
         pk_venda = result[0]
@@ -62,15 +62,63 @@ class Usuario():
         for produto in self.list: # E gera uma relação venda-produto e insere no banco de dados no banco de dados  
             self.database.executar("INSERT INTO venda_produto(pk_venda,pk_produto,quantidade,valor_total) VALUES (?,?,?,?)",(pk_venda,produto.pk,produto.quantidade,produto.preco * produto.quantidade))
 
-    def pedido_concluido(self,restaurante): # Vou fazer depois TODO
-        print(f"Nome: {restaurante}")
+    def pedido_concluido(self,pk): # Vou fazer depois TODO
+        valor_total = 0
+        nome = self.database.consulta_coluna("restaurante","restaurante","pk_restaurante",pk)
+        print(f"Nome: {nome}")
         print(f"|{"Nome":^60s}|{"Valor":^9s}|{"Quantidade"}|")
         for produto in self.list:
             print(f"|{produto.nome:<60s}|R$ {produto.preco:<6.2f}|{produto.quantidade:<10d}|")
-        print(f"Valor total: R${9}")
+            valor_total += (produto.preco * produto.quantidade)
+            time.sleep(0.09)
+        print(f"|")
+        print(f"|Valor total: R${valor_total}")
+        
         input('Pressione <<ENTER>> para voltar para a tela dos restaurantes ')
         self.list = []
         return None
+    
+    def historico(self,historico):
+        index = 0
+
+        print(historico)
+        while True:
+            venda = historico[index]
+
+            Utils.limpar_tela()
+            
+            restaurante = self.database.consulta_restaurante_nome(venda[3])
+            print(f"{restaurante[0]:^111s}\n")
+
+            produtos = self.database.consulta_venda_produtos(venda[0])
+            print(f"|{"Nome":^60s}|{"Preço individual":^16s}|{"Quantidade":^10s}|{"Preço total":^11s}")
+            for produto in produtos:
+                print(f"|{produto[2]:<60s}|{produto[3]:<16.2f}|{produto[0]:<10d}|R$:{produto[1]:<11.2f}")
+                time.sleep(0.08)
+            print(f"Valor total da compra: R${venda[1]:.2f} ")
+            print(f"Data: {venda[2]}")
+            
+            print("A -- Anterior")
+            print("P -- Próxima")
+            print("Pressione <<ENTER>> para voltar para a tela dos restaurantes \n")
+            while True:
+                escolha = input("Digite a sua escolha: ")
+
+                if escolha.upper() == "A":
+                    index -= 1
+                    if index < 0:
+                        index = 0
+                    break
+                elif escolha.upper() == "P":
+                    index += 1
+                    if index == len(historico):
+                        index -= 1
+                    break
+                elif escolha == "":
+                    return None
+                else:
+                    continue
+        
 
     @property #getters e setters
     def nome(self):

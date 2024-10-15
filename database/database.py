@@ -18,7 +18,7 @@ class Database:
                             pk_produto INTEGER PRIMARY KEY,
                             nome_produto VARCHAR(100) NOT NULL,
                             preco NUMERIC CHECK (preco > 0) NOT NULL,
-                            pk_restaurante INTEGER REFERENCES restaurante
+                            pk_restaurante INTEGER REFERENCES restaurante NOT NULL
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS usuario(
                             pk_usuario INTEGER PRIMARY KEY NOT NULL,
@@ -30,14 +30,15 @@ class Database:
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda(
                             pk_venda INTEGER PRIMARY KEY NOT NULL,
-                            valor NUMERIC CHECK (preco > 0) NOT NULL,
-                            pk_usuario INTEGER REFERENCES usuario,
+                            valor NUMERIC CHECK (valor > 0) NOT NULL,
+                            pk_usuario INTEGER REFERENCES usuario NOT NULL,
+                            pk_restaurante INTEGER REFERENCES restaurante NOT NULL,
                             criacao DATE DEFAULT(datetime('now', 'localtime'))
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda_produto(
                             pk_venda_produto INTEGER PRIMARY KEY NOT NULL,
-                            pk_venda INTEGER REFERENCES venda,
-                            pk_produto INTEGER REFERENCES produto,
+                            pk_venda INTEGER REFERENCES venda NOT NULL,
+                            pk_produto INTEGER REFERENCES produto NOT NULL,
                             quantidade INTEGER NOT NULL,
                             valor_total NUMERIC CHECK(valor_total > 0) NOT NULL
                             );''')
@@ -57,6 +58,11 @@ class Database:
             return False
         else:
             return True
+        
+    def consulta_restaurante_nome(self,pk):
+        sql = 'SELECT restaurante FROM restaurante WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
         
     def consulta_restaurante(self,email,senha): # consulta do login
         sql = 'SELECT pk_restaurante,restaurante,comissao,email_restaurante,senha_restaurante FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?'
@@ -98,7 +104,21 @@ class Database:
         sql = 'SELECT pk_venda FROM venda WHERE pk_usuario = ? ORDER BY criacao DESC LIMIT 1;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
-    
+
+    def consulta_venda(self,pk):
+        sql = f'SELECT pk_venda,valor,criacao,pk_restaurante FROM venda WHERE pk_usuario = ? ORDER BY pk_venda DESC;'
+        result = self.conexao.execute(sql,(pk,))
+        result = result.fetchall()
+        if result is None:
+            return False
+        else:
+            return result
+        
+    def consulta_venda_produtos(self,pk_venda):
+        sql = f'SELECT venda_produto.quantidade,venda_produto.valor_total,produto.nome_produto,produto.preco FROM venda_produto INNER JOIN produto ON venda_produto.pk_produto = produto.pk_produto WHERE pk_venda = ?'
+        result = self.conexao.execute(sql,(pk_venda,))
+        return result.fetchall()
+
     def quantidade_produto(self,pk): # retorna a quantidade de produtos (cada linha da tabela) onde a pk for igual a pk do restaurante
         sql = 'SELECT COUNT() FROM produto WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
