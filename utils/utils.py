@@ -49,7 +49,7 @@ class Utils():
         while True: # recebe e converte o email para lowercase
             email = input("Digite o seu email: ").lower().strip()
 
-            if re.search(r"[\w]+@[\w]+[.][a-z]",email) == None: # verifica se o email é um email
+            if re.search(r"[\w]+@[\w]+[.][a-z]{2}",email) == None: # verifica se o email é um email
                 print("O email digitado não é valído")
                 continue
             
@@ -57,7 +57,7 @@ class Utils():
                 print("O email não deve ter mais que 200 caracteres")
                 continue
             
-            if database.consulta_coluna("email_restaurante","restaurante","email_restaurante",email) == True or database.consulta_coluna("email_usuario","usuario","email_usuario",email): # verifica se o email ja existe na database
+            if database.consulta_coluna("email_restaurante","restaurante","email_restaurante",email) or database.consulta_coluna("email_usuario","usuario","email_usuario",email): # verifica se o email ja existe na database
                 print("O email já consta no banco de dados")
                 continue
             else:
