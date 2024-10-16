@@ -120,7 +120,6 @@ class Usuario():
                     return None
                 else:
                     continue
-        
 
     @property #getters e setters
     def nome(self):

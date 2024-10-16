@@ -104,7 +104,7 @@ class Utils():
             elif len (nome_completo) > 200:
                 print("O seu nome não pode ter mais de 200 caracteres")
                 continue
-            elif re.search('[a-zA-Z ]',nome_completo) == None: # Vê se tem números
+            elif re.search('[a-zA-ZÀ-ÿ ]',nome_completo) == None: # Vê se tem números
                 print("Nome inválido")
                 continue
             elif re.search(r"[a-zA-Z]+[' ']+[a-zA-Z]",nome_completo) == None: # TODO # Nome mais Sobrenome mais tudo TODO MESMO
