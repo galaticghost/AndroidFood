@@ -66,9 +66,9 @@ class Restaurante:
             print("Nenhum produto cadastrado!")
             return False
         else:
-            print (f"|\033[31m{"ID":^6s}\033[0m|\033[36m{"Nome":^60s}\033[0m|\033[32m{"Preço":^10s}\033[0m") # printa id nome e preço
+            print (f'|\033[31m{"ID":^6s}\033[0m|\033[36m{"Nome":^60s}\033[0m|\033[32m{"Preço":^10s}\033[0m') # printa id nome e preço
             for tupla in result: # para cada tupla 
-                print (f"|\033[31m{tupla[0]:^6d}\033[0m|\033[36m{tupla[1]:<60s}\033[0m| \033[32mR$:{tupla[2]:<6.2f}\033[0m")
+                print (f'|\033[31m{tupla[0]:^6d}\033[0m|\033[36m{tupla[1]:<60s}\033[0m| \033[32mR$:{tupla[2]:<6.2f}\033[0m')
             return result
     
     def quantidade_produto(self): # mostra a quantidades de produtos cadastrados no banco na chave do restaurante
