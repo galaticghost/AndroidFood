@@ -194,15 +194,15 @@ class App:
             self.__logout_usuario(usuario) # Logout
         else:
             destaques = 0 
-            print(f"|{"ID":^6s}|{"Nome":^60s}|")
+            print(f'|{"ID":^6s}|{"Nome":^60s}|')
             for restaurante in restaurantes: # Printa os restaurantes e puxa os ids para uma lista
                 time.sleep(0.09)
                 if destaques < 3: # Printa os três restaurantes com a maior comissão com uma cor diferente
-                    print(f"|\033[35m{str(restaurante[0]):^6s}\033[0m|\033[35m{restaurante[1]:^60s}\033[0m|")
+                    print(f'|\033[35m{str(restaurante[0]):^6s}\033[0m|\033[35m{restaurante[1]:^60s}\033[0m|')
                     restaurante_id.append(restaurante[0])
                     destaques += 1 # adiciona no contador
                 else:
-                    print(f"|\033[94m{str(restaurante[0]):^6s}\033[0m|\033[94m{restaurante[1]:^60s}\033[0m|")
+                    print(f'|\033[94m{str(restaurante[0]):^6s}\033[0m|\033[94m{restaurante[1]:^60s}\033[0m|')
                     restaurante_id.append(restaurante[0])        
             
             time.sleep(0.09)

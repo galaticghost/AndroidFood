@@ -67,9 +67,9 @@ class Usuario():
         valor_total = 0
         nome = self.database.consulta_restaurante_nome(pk)
         print(f"Restaurante: {nome[0]}")
-        print(f"|{"Nome":^60s}|{"Valor":^9s}|{"Quantidade"}")
+        print(f'|{"Nome":^60s}|{"Valor":^9s}|{"Quantidade"}')
         for produto in self.list:
-            print(f"|{produto.nome:<60s}|R$ {produto.preco:<6.2f}|{produto.quantidade:<10d}")
+            print(f'|{produto.nome:<60s}|R$ {produto.preco:<6.2f}|{produto.quantidade:<10d}')
             valor_total += (produto.preco * produto.quantidade)
             time.sleep(0.09)
         print(f"|")
@@ -92,9 +92,9 @@ class Usuario():
             produtos = self.database.consulta_venda_produtos(venda[0])
             print(f" "+"_" * 100+" ")
             print(f"|"+" " * 100+"|")
-            print(f"|\033[36m{"Nome":^60s}\033[0m|\033[32m{"Preço individual":^16s}\033[0m|\033[35m{"Quantidade":^10s}\033[0m|\033[94m{"Preço total":^11s}\033[0m|")
+            print(f'|\033[36m{"Nome":^60s}\033[0m|\033[32m{"Preço individual":^16s}\033[0m|\033[35m{"Quantidade":^10s}\033[0m|\033[94m{"Preço total":^11s}\033[0m|')
             for produto in produtos:
-                print(f"|\033[36m{produto[2]:<60s}\033[0m|\033[32m{produto[3]:<16.2f}\033[0m|\033[35m{produto[0]:<10d}\033[0m|\033[94mR$:{produto[1]:<8.2f}\033[0m|")
+                print(f'|\033[36m{produto[2]:<60s}\033[0m|\033[32m{produto[3]:<16.2f}\033[0m|\033[35m{produto[0]:<10d}\033[0m|\033[94mR$:{produto[1]:<8.2f}\033[0m|')
                 time.sleep(0.08)
             print(f"|"+"_" * 100+"|")
             print(f"Valor total da compra: R${venda[1]:.2f} ")
