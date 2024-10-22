@@ -14,6 +14,11 @@
 Android food é um programa em python feito para o entregável 2 de OAP da Atitus e atualizado para o entregável 3.
 Ele foi feito com meus dedos.
 
+# Guia de uso
+Apesar de ser meio obvio de como rodar o .py, o AndroidFood possui duas peculiaridades.
+Primeiro que os restaurantes sem produtos cadastrados não vão aparecer para os usuários.
+Segundo que apesar do AndroidFood criar automaticamente um banco de dados vazio(sem dados), ele possui um banco de exemplo com valores dentro database
+
 # Features
 - Cadastro!
 - Login!
