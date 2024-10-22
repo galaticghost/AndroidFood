@@ -67,13 +67,15 @@ class Usuario():
         valor_total = 0
         nome = self.database.consulta_restaurante_nome(pk)
         print(f"Restaurante: {nome[0]}")
-        print(f'|{"Nome":^60s}|{"Valor":^9s}|{"Quantidade"}')
+        print(f" {"_" * 81} ")
+        print(f"|{" "* 81}|")
+        print(f'|\033[38;2;58;105;198m{"Nome":^60s}\033[0m|\033[38;2;81;146;31m{"Valor":^9s}\033[0m|\033[38;2;186;25;203m{"Quantidade"}\033[0m|')
         for produto in self.list:
-            print(f'|{produto.nome:<60s}|R$ {produto.preco:<6.2f}|{produto.quantidade:<10d}')
+            print(f'|\033[38;2;58;105;198m{produto.nome:<60s}\033[0m|\033[38;2;81;146;31mR$ {produto.preco:<6.2f}\033[0m|\033[38;2;186;25;203m{produto.quantidade:<10d}\033[0m|')
             valor_total += (produto.preco * produto.quantidade)
             time.sleep(0.09)
-        print(f"|")
-        print(f"|Valor total: R${valor_total}")
+        print(f"|{"_" * 81}|")
+        print(f"\nValor total: \033[38;2;81;146;31mR${valor_total:.2f}\033[0m\n")
         
         input('Pressione <<ENTER>> para voltar para a tela dos restaurantes ')
         self.list = []

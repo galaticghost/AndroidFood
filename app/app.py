@@ -207,9 +207,9 @@ class App:
             
             time.sleep(0.09)
             print(f"\nSeu ultimo acesso foi em {usuario.acesso}")
-            print("Digite o id do restaurante que deseja ver")
-            print("Caso deseje ver o histórico das compras digite \"H\"")
-            print("Caso deseje sair digite 0")
+            print("\nDigite o \033[94mid\033[0m do restaurante que deseja ver")
+            print("\nCaso deseje ver o histórico das compras digite H")
+            print("Caso deseje sair digite 0\n")
             return restaurante_id # Retorna a lista
             
     def __catalogo(self,pk,usuario): # Mostra o catálogo de comidas do restaurante
