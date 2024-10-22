@@ -86,6 +86,7 @@ class App:
     def __painel_restaurante(self,restaurante):
         Utils.limpar_tela()
         print(f"Bem-vindo {restaurante.restaurante}!")
+        print(f"Seu ultimo acesso foi em {restaurante.acesso}")
         restaurante.tabela_produto() # função que retorna todos os produtos do restaurante
         restaurante.quantidade_produto() # função que retorna a quantidade dos produtos cadastrados
         print(f"O valor da comissão é {restaurante.comissao}")
@@ -205,6 +206,7 @@ class App:
                     restaurante_id.append(restaurante[0])        
             
             time.sleep(0.09)
+            print(f"\nSeu ultimo acesso foi em {usuario.acesso}")
             print("Digite o id do restaurante que deseja ver")
             print("Caso deseje ver o histórico das compras digite \"H\"")
             print("Caso deseje sair digite 0")

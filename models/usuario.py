@@ -31,12 +31,12 @@ class Usuario():
             time.sleep(2)
             return False
         else:
-            self.database.executar("UPDATE usuario SET ultima_atualizacao = datetime('now','localtime') WHERE email_usuario = ? AND senha_usuario = ?",(self.email,self.senha)) # atualiza a data do ultimo login
             result = self.database.consulta_usuario(self.email,self.senha) # lista com os atributos novos
-            
+            self.database.executar("UPDATE usuario SET ultima_atualizacao = datetime('now','localtime') WHERE email_usuario = ? AND senha_usuario = ?",(self.email,self.senha)) # atualiza a data do ultimo login
+
             self.pk = result[0]
             self.nome = result[1]
-            
+            self.acesso = result[2]
             return True
 
     def lista(self,produto): # gerencia a lista do cliente

@@ -65,12 +65,12 @@ class Database:
         return result.fetchone()
         
     def consulta_restaurante(self,email,senha): # consulta do login
-        sql = 'SELECT pk_restaurante,restaurante,comissao,email_restaurante,senha_restaurante FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?'
+        sql = 'SELECT pk_restaurante,restaurante,comissao,ultima_atualizacao FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?'
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
     def consulta_usuario(self,email,senha): # consulta do login
-        sql = 'SELECT pk_usuario,nome_usuario,email_usuario,senha_usuario FROM usuario WHERE email_usuario = ? AND senha_usuario = ?'
+        sql = 'SELECT pk_usuario,nome_usuario,ultima_atualizacao FROM usuario WHERE email_usuario = ? AND senha_usuario = ?'
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
