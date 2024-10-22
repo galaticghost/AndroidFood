@@ -54,27 +54,27 @@ class Database:
     def consulta_login(self,tabela,email,senha): # chegagem para o login
         sql = f'SELECT email_{tabela},senha_{tabela} FROM {tabela} WHERE email_{tabela} = ? AND senha_{tabela} = ?;' # comando sql
         result = self.conexao.execute(sql,(email,senha)) # result recebe os resultados da query
-        if result.fetchone() == None: # EU ODEIO ESSE FETCHONE. Caso result esteje vazio ele retorna falso 
+        if result.fetchone() == None: #Caso result esteje vazio ele retorna falso 
             return False
         else:
             return True
         
-    def consulta_restaurante_nome(self,pk):
+    def consulta_restaurante_nome(self,pk): # Consulta o nome do restaurante
         sql = 'SELECT restaurante FROM restaurante WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
         
-    def consulta_restaurante(self,email,senha): # consulta do login
+    def consulta_restaurante(self,email,senha): # consulta do login do restaurante
         sql = 'SELECT pk_restaurante,restaurante,comissao,ultima_atualizacao FROM restaurante WHERE email_restaurante = ? AND senha_restaurante = ?'
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
-    def consulta_usuario(self,email,senha): # consulta do login
+    def consulta_usuario(self,email,senha): # consulta do login do usuario
         sql = 'SELECT pk_usuario,nome_usuario,ultima_atualizacao FROM usuario WHERE email_usuario = ? AND senha_usuario = ?'
         result = self.conexao.execute(sql,(email,senha))
         return result.fetchone()
     
-    def consulta_produto(self,pk_restaurante): # consulta do produto
+    def consulta_produto(self,pk_restaurante): # consulta os produtos de um restaurante
         sql = 'SELECT pk_produto,nome_produto,preco FROM produto WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk_restaurante,))
         return result.fetchall()
@@ -105,7 +105,7 @@ class Database:
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
 
-    def consulta_venda(self,pk):
+    def consulta_venda(self,pk): # Consulta as compras de um usuario ordenado da ultima a primeira
         sql = f'SELECT pk_venda,valor,criacao,pk_restaurante FROM venda WHERE pk_usuario = ? ORDER BY pk_venda DESC;'
         result = self.conexao.execute(sql,(pk,))
         result = result.fetchall()
@@ -114,7 +114,7 @@ class Database:
         else:
             return result
         
-    def consulta_venda_produtos(self,pk_venda):
+    def consulta_venda_produtos(self,pk_venda): # Consulta a relação da venda_produto e os nomes e preços dos produtos relacionados
         sql = f'SELECT venda_produto.quantidade,venda_produto.valor_total,produto.nome_produto,produto.preco FROM venda_produto INNER JOIN produto ON venda_produto.pk_produto = produto.pk_produto WHERE pk_venda = ?'
         result = self.conexao.execute(sql,(pk_venda,))
         return result.fetchall()

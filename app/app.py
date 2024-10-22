@@ -267,15 +267,15 @@ class App:
                 time.sleep(2)
                 continue
 
-    def __historico(self,usuario):
+    def __historico(self,usuario): # Mostra o histórico do usuário
         Utils.limpar_tela()
-        historico = self.database.consulta_venda(usuario.pk)
-        if len(historico) == 0:
+        historico = self.database.consulta_venda(usuario.pk) # consulta as compras do usuario
+        if len(historico) == 0: # Caso não haja nenhuma compra
             print("Seu histórico está vazio")
             input("Pressione <<ENTER>> para voltar para a tela dos restaurantes")
         else:
-            usuario.historico(historico)
+            usuario.historico(historico) # Chama o método historico do usuario
         
-    def __logout_usuario(self,usuario):
+    def __logout_usuario(self,usuario): # Logout do usuario
         del usuario
         self.menu_inicial_usuario()
