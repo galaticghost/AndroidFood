@@ -92,7 +92,7 @@ class Database:
         else:
             return True
     
-    def consulta_coluna(self,coluna,tabela,coluna_comparador,item): # eu aprendi parametros do sql por meio desse codigo. eu odeio esse codigo
+    def consulta_coluna(self,coluna,tabela,coluna_comparador,item): # Consulta uma coluna de uma tabela
         sql = f'SELECT {coluna} FROM {tabela} WHERE {coluna_comparador} = ?;' # comando sql
         result = self.conexao.execute(sql,(item,)) # result recebe os resultados da query
         if result.fetchone() == None:
