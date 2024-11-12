@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+</head>
+<body>
+    {% if login == false %}
+        <p>Você não está logado.</p>
+        <p>Clique <a href="{{ url_for('login') }}">aqui</a> para logar</p>
+    {% else %}
+        <p>Funciona</p>
+    {% endif %}
+</body>
+</html>

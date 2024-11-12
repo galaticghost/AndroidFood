@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    {% if login %}
+      <p>Você já está logado.</p>
+    {% else %}
+      <form method="post">
+        <p><label for="email">Email: </label></p>
+        <p><input type="text" id="email" name="email"></p>
+        <p><label for="senha">Senha: </label></p>
+        <p><input type="password" id="senha" name="senha"></p>
+        <p><input type="submit" value="Logar"></p>
+      </form>
+    {% endif %}
+  </body>
+</html>

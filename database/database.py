@@ -33,7 +33,8 @@ class Database:
                             valor NUMERIC CHECK (valor > 0) NOT NULL,
                             pk_usuario INTEGER REFERENCES usuario NOT NULL,
                             pk_restaurante INTEGER REFERENCES restaurante NOT NULL,
-                            criacao DATE DEFAULT(datetime('now', 'localtime'))
+                            criacao DATE DEFAULT(datetime('now', 'localtime')),
+                            status VARCHAR(50)
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda_produto(
                             pk_venda_produto INTEGER PRIMARY KEY NOT NULL,
