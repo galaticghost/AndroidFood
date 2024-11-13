@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{nome}}</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/restaurante.css') }}" >
+  </head>
+  <body>
+    {% if pedidos is none %}
+      <p>Nenhum pedido</p>
+    {% else %}
+      {% for pedido in pedidos%}
+       <div class="pedidos">
+        <p>ID pedido: {{ pedido["pk"] }}</p>
+        <p>Valor: {{ pedido["valor"] }}</p>
+        <p>Criação: {{ pedido["criacao"] }}</p>
+        <p>Status: {{ pedido["status"] }}</p>
+       </div>
+      {% endfor %}
+    {% endif %}
+  
+  </body>
+</html>

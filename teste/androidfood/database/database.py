@@ -34,7 +34,7 @@ class Database:
                             pk_usuario INTEGER REFERENCES usuario NOT NULL,
                             pk_restaurante INTEGER REFERENCES restaurante NOT NULL,
                             criacao DATE DEFAULT(datetime('now', 'localtime')),
-                            status VARCHAR(50)
+                            status VARCHAR(50) DEFAULT "criado"
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda_produto(
                             pk_venda_produto INTEGER PRIMARY KEY NOT NULL,
@@ -114,6 +114,11 @@ class Database:
             return False
         else:
             return result
+        
+    def consulta_pedidos(self,pk_restaurante):
+        sql = f'SELECT pk_venda,valor,pk_usuario,criacao,status FROM venda WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk_restaurante,))
+        return result.fetchall()
         
     def consulta_venda_produtos(self,pk_venda): # Consulta a relação da venda_produto e os nomes e preços dos produtos relacionados
         sql = f'SELECT venda_produto.quantidade,venda_produto.valor_total,produto.nome_produto,produto.preco FROM venda_produto INNER JOIN produto ON venda_produto.pk_produto = produto.pk_produto WHERE pk_venda = ?'
