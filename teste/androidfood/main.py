@@ -67,3 +67,7 @@ def restaurante():
         pedidos = None
     
     return render_template("restaurante.jinja",nome = session['nome'],pedidos = pedidos)
+
+@app.route('/aceitar', methods=['GET','POST'])
+def aceitar():
+    pass
