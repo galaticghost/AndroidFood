@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/restaurante.css') }}" >
   </head>
   <body>
-    {% if pedidos is none %}
+    {% if pedidos[0] is none %}
       <p>Nenhum pedido</p>
     {% else %}
       {% for pedido in pedidos%}
        <div class="pedidos">
         <p>ID pedido: {{ pedido["pk"] }}</p>
-        <p>Valor: R${{ pedido["valor"] }}</p>
+        <p>Valor: R$:{{ pedido["valor"] }}</p>
         <p>Criação: {{ pedido["criacao"] }}</p>
         <p>Status: {{ pedido["status"] }}</p>
-        {% if pedido["status"] = "criado" %}
+        {% if pedido["status"] == "criado" %}
           <button><a href="{{ url_for('aceitar') }}">Aceitar</a></button>
           <button><a href="{{ url_for('rejeitar') }}">Rejeitar</a></button>
         {% endif %}

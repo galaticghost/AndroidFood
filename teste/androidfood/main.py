@@ -63,11 +63,13 @@ def restaurante():
                         "status": venda[4]
                     }
             pedidos.append(pedido)
-    if pedidos == []:
-        pedidos = None
     
     return render_template("restaurante.jinja",nome = session['nome'],pedidos = pedidos)
 
 @app.route('/aceitar', methods=['GET','POST'])
 def aceitar():
+    pass
+
+@app.route('/rejeitar', methods=['GET','POST'])
+def rejeitar():
     pass
