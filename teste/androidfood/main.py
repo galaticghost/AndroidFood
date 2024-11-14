@@ -70,19 +70,19 @@ def restaurante():
     
     return render_template("restaurante.jinja",nome = session['nome'],pedidos = session['pedidos'])
 
-@app.route('/aceitar/<pk>', methods=['GET','POST'])
+@app.route('/restaurante/aceitar/<pk>', methods=['GET','POST'])
 def aceitar(pk = None):
     return inserir(pk,"criado","aceito")
     
-@app.route('/rejeitar/<pk>', methods=['GET','POST'])
+@app.route('/restaurante/rejeitar/<pk>', methods=['GET','POST'])
 def rejeitar(pk = None):
     return inserir(pk,"criado","rejeitado")
 
-@app.route('/entrega/<pk>', methods=['GET','POST'])
+@app.route('/restaurante/entrega/<pk>', methods=['GET','POST'])
 def entrega(pk = None):
     return inserir(pk,"aceito","saiu para a entrega")
     
-@app.route('/entregue/<pk>', methods=['GET','POST'])
+@app.route('/restaurante/entregue/<pk>', methods=['GET','POST'])
 def entregue(pk = None):
     return inserir(pk,"saiu para a entrega","entregue")
 
@@ -93,3 +93,7 @@ def inserir(pk,status_check,status):
     if database.consulta_status(pk,session['pk']) == status_check:
         database.executar(f"UPDATE venda SET status = '{status}' WHERE pk_venda = ? AND pk_restaurante = ?;", (pk,session['pk']))
     return restaurante()
+
+@app.route("/restaurante/relatorio", methods=['GET','POST'])
+def relatorio():
+    pass
