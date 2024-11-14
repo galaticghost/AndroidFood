@@ -21,9 +21,10 @@
           <button><a href="{{ url_for('rejeitar', pk=pedido['pk']) }}">Rejeitar</a></button>
         {% elif pedido["status"] == "aceito" %}
           <button><a href="{{ url_for('entrega', pk=pedido['pk']) }}">Saiu para a entrega</a></button>
-        {% elif pedido["status" == "saiu para a entrega"]%}
+        {% elif pedido["status"] == "saiu para a entrega" %}
           <button><a href="{{ url_for('entregue', pk=pedido['pk']) }}">Entregue</a></button>
         {% endif %}
+        <hr>
        </div>
       {% endfor %}
     {% endif %}

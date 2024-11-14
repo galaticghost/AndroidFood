@@ -1,6 +1,7 @@
 from flask import Flask,render_template, url_for
 from flask import session
 from flask import request
+from flask import redirect
 from os import urandom
 from hashlib import md5
 
@@ -71,19 +72,24 @@ def restaurante():
 
 @app.route('/aceitar/<pk>', methods=['GET','POST'])
 def aceitar(pk = None):
-    if session.get('login') == None or session['login'] == False:
-        session['login'] = False
-        return render_template("index.jinja",login = session['login'])
-    print(database.consulta_status(pk,session['pk']))
-    if database.consulta_status(pk,session['pk']) == 'criado':
-        database.executar(f"UPDATE venda SET status = 'aceito' WHERE pk_venda = ? AND pk_restaurante = ?;", (pk,session['pk']))
-    return restaurante()
+    return inserir(pk,"criado","aceito")
     
 @app.route('/rejeitar/<pk>', methods=['GET','POST'])
 def rejeitar(pk = None):
+    return inserir(pk,"criado","rejeitado")
+
+@app.route('/entrega/<pk>', methods=['GET','POST'])
+def entrega(pk = None):
+    return inserir(pk,"aceito","saiu para a entrega")
+    
+@app.route('/entregue/<pk>', methods=['GET','POST'])
+def entregue(pk = None):
+    return inserir(pk,"saiu para a entrega","entregue")
+
+def inserir(pk,status_check,status):
     if session.get('login') == None or session['login'] == False:
         session['login'] = False
-        return render_template("index.jinja",login = session['login'])
-    if database.consulta_status(pk,session['pk']) == 'criado':
-        database.executar(f"UPDATE venda SET status = 'rejeitado' WHERE pk_venda = ? AND pk_restaurante = ?;", (pk,session['pk']))
+        return index()
+    if database.consulta_status(pk,session['pk']) == status_check:
+        database.executar(f"UPDATE venda SET status = '{status}' WHERE pk_venda = ? AND pk_restaurante = ?;", (pk,session['pk']))
     return restaurante()
