@@ -101,6 +101,22 @@ class Database:
         else:
             return True
         
+    def consulta_status(self,pk,pk_restaurante):
+        sql = f'SELECT status FROM venda WHERE pk_venda = ? AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,pk_restaurante))
+        result = result.fetchone()
+        match(result[0]):
+            case 'aceito':
+                return 'aceito'
+            case 'criado':
+                return 'criado'
+            case 'rejeitado':
+                return 'rejeitado'
+            case 'saiu para a entrega':
+                return 'saiu para a entrega'
+            case 'entregue':
+                return 'entregue'
+
     def consulta_pk_venda(self,pk): # Consulta o pk da venda mais recente feita pelo usuario
         sql = 'SELECT pk_venda FROM venda WHERE pk_usuario = ? ORDER BY criacao DESC LIMIT 1;'
         result = self.conexao.execute(sql,(pk,))

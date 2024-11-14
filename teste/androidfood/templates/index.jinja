@@ -8,7 +8,7 @@
 <body>
     {% if login %}
         <p>Clique <a href="{{ url_for('restaurante') }}">aqui</a> para acessar os pedidos</p></p>
-        <p>Clique <a href="{{ url_for('logoff') }}">aqui</a> para deslogar</p>
+        <p>Clique <a href="{{ url_for('logout') }}">aqui</a> para deslogar</p>
     {% else %}
         <p>Você não está logado.</p>
         <p>Clique <a href="{{ url_for('login') }}">aqui</a> para logar</p>

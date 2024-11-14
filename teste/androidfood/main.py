@@ -11,6 +11,7 @@ key = urandom(12).hex()
 app.secret_key = key
 database = Database()
 
+@app.route("/index", methods=['GET','POST'])
 @app.route("/", methods=['GET','POST'])
 def index():
     if session.get('login') == None:
@@ -41,10 +42,10 @@ def login():
             falha = True
     return render_template("login.jinja",login = session['login'],falha = falha)
 
-@app.route('/logoff', methods=['GET','POST'])
-def logoff():
-    session['login'] = False
-    return render_template("index.jinja",login = session['login'])
+@app.route('/logout', methods=['GET','POST'])
+def logout():
+    session.clear()
+    return index()
 
 @app.route('/restaurante', methods=['GET','POST'])
 def restaurante():
@@ -64,12 +65,25 @@ def restaurante():
                     }
             pedidos.append(pedido)
     
-    return render_template("restaurante.jinja",nome = session['nome'],pedidos = pedidos)
+    session['pedidos'] = pedidos
+    
+    return render_template("restaurante.jinja",nome = session['nome'],pedidos = session['pedidos'])
 
-@app.route('/aceitar', methods=['GET','POST'])
-def aceitar():
-    pass
-
-@app.route('/rejeitar', methods=['GET','POST'])
-def rejeitar():
-    pass
+@app.route('/aceitar/<pk>', methods=['GET','POST'])
+def aceitar(pk = None):
+    if session.get('login') == None or session['login'] == False:
+        session['login'] = False
+        return render_template("index.jinja",login = session['login'])
+    print(database.consulta_status(pk,session['pk']))
+    if database.consulta_status(pk,session['pk']) == 'criado':
+        database.executar(f"UPDATE venda SET status = 'aceito' WHERE pk_venda = ? AND pk_restaurante = ?;", (pk,session['pk']))
+    return restaurante()
+    
+@app.route('/rejeitar/<pk>', methods=['GET','POST'])
+def rejeitar(pk = None):
+    if session.get('login') == None or session['login'] == False:
+        session['login'] = False
+        return render_template("index.jinja",login = session['login'])
+    if database.consulta_status(pk,session['pk']) == 'criado':
+        database.executar(f"UPDATE venda SET status = 'rejeitado' WHERE pk_venda = ? AND pk_restaurante = ?;", (pk,session['pk']))
+    return restaurante()

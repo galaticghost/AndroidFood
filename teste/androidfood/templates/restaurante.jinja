@@ -17,12 +17,16 @@
         <p>Criação: {{ pedido["criacao"] }}</p>
         <p>Status: {{ pedido["status"] }}</p>
         {% if pedido["status"] == "criado" %}
-          <button><a href="{{ url_for('aceitar') }}">Aceitar</a></button>
-          <button><a href="{{ url_for('rejeitar') }}">Rejeitar</a></button>
+          <button><a href="{{ url_for('aceitar', pk=pedido['pk']) }}">Aceitar</a></button>
+          <button><a href="{{ url_for('rejeitar', pk=pedido['pk']) }}">Rejeitar</a></button>
+        {% elif pedido["status"] == "aceito" %}
+          <button><a href="{{ url_for('entrega', pk=pedido['pk']) }}">Saiu para a entrega</a></button>
+        {% elif pedido["status" == "saiu para a entrega"]%}
+          <button><a href="{{ url_for('entregue', pk=pedido['pk']) }}">Entregue</a></button>
         {% endif %}
        </div>
       {% endfor %}
     {% endif %}
-  
+    <button><a href="{{ url_for('logout') }}">Logout</a></button>
   </body>
 </html>
