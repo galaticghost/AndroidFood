@@ -22,25 +22,35 @@ def index():
 @app.route("/login", methods=['GET','POST'])
 def login():
     falha = False
+    
     if session.get('login') == None:
         session['login'] = False
+    
     if request.method == 'POST':
         email = request.form['email'].lower().strip()
+        
         senha = request.form['senha']
         senha = md5(senha.encode())
         senha = senha.hexdigest()
+        
         restaurante_query = database.consulta_restaurante(email,senha)
         if restaurante_query is not None:
             session['pk'] = restaurante_query[0]
             session['nome'] = restaurante_query[1]
             session['comissao'] = restaurante_query[2]
             session['ultimo_acesso'] = restaurante_query[3]
-            database.executar("UPDATE restaurante SET ultima_atualizacao = datetime('now','localtime') WHERE email_restaurante = ? AND senha_restaurante = ?",(email,senha)) # atualiza a data do ultimo login
+            
+            database.executar("""UPDATE restaurante 
+            SET ultima_atualizacao = datetime('now','localtime') 
+            WHERE email_restaurante = ? AND senha_restaurante = ?""",(email,senha)) # atualiza a data do ultimo login
+            
             session['login'] = True
+
             return render_template("index.jinja",login = session['login'])
         else:
             session['login'] = False
             falha = True
+    
     return render_template("login.jinja",login = session['login'],falha = falha)
 
 @app.route('/logout', methods=['GET','POST'])

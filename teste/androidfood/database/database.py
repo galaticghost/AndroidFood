@@ -154,6 +154,40 @@ class Database:
             return False
         else:
             return result
+        
+    def consulta_media_gasto(self,pk):
+        sql = f'SELECT AVG(valor) FROM venda WHERE pk_restaurante = ? GROUP BY pk_usuario;'
+        result = self.conexao.execute(sql,(pk,))
+        result = result.fetchall()
+        if not result:
+            return False
+        else:
+            return result
+        
+    def consulta_maior_compra(self,pk):
+        sql = f'SELECT pk_venda,MAX(valor),pk_usuario,pk_restaurante,criacao,status FROM venda WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        result = result.fetchall()
+        if not result:
+            return False
+        else:
+            return result
+    
+    def consulta_maior_comissao(self):
+        sql = f'SELECT pk_restaurante,restaurante,MAX(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
+        result = self.conexao.execute(sql)
+        return result.fetchone()
+
+    def consulta_menor_comissao(self):
+        sql = f'SELECT pk_restaurante,restaurante,MIN(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
+        result = self.conexao.execute(sql)
+        return result.fetchone()
+
+    def consulta_mais_pedido(self):
+        sql = f'SELECT *,COUNT(pk_produto) FROM venda_produto GROUP BY pk_produto ORDER BY COUNT(pk_produto) DESC LIMIT 1' # TODO
+        result = self.conexao.execute(sql)
+        return result.fetchone()
+
 
     def executar(self,sql,tupla): # É só um execute com commit
         self.conexao.execute(sql,tupla)
