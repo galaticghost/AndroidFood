@@ -172,6 +172,14 @@ class Database:
             return False
         else:
             return result
+        
+    def consulta_maior_quantidade(self,pk):
+        sql = '''SELECT vp.pk_venda,SUM(quantidade) FROM venda_produto vp 
+            INNER JOIN venda v ON v.pk_venda = vp.pk_venda 
+            WHERE v.pk_restaurante = ?
+            GROUP BY vp.pk_venda ORDER BY SUM(quantidade) DESC'''
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
     
     def consulta_maior_comissao(self):
         sql = f'SELECT pk_restaurante,restaurante,MAX(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
@@ -183,11 +191,76 @@ class Database:
         result = self.conexao.execute(sql)
         return result.fetchone()
 
-    def consulta_mais_pedido(self):
-        sql = f'SELECT *,COUNT(pk_produto) FROM venda_produto GROUP BY pk_produto ORDER BY COUNT(pk_produto) DESC LIMIT 1' # TODO
-        result = self.conexao.execute(sql)
+    def consulta_mais_pedido(self,pk):
+        sql = '''SELECT *,COUNT(pk_produto) FROM venda_produto vp
+        INNER JOIN venda v ON v.pk_venda = vp.pk_venda 
+        WHERE pk_restaurante = ?
+        GROUP BY pk_produto ORDER BY COUNT(pk_produto) DESC LIMIT 1''' # TODO
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_criado(self,pk):
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "criado" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_aceito(self,pk):
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "aceito" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_rejeitado(self,pk):
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "rejeitado" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
 
+    def status_saiu_entrega(self,pk):
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "saiu para entrega" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_entregue(self,pk):
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "entregue" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def consulta_status_venda(self,pk):
+        criado = self.status_criado(pk)
+        aceito = self.status_aceito(pk)
+        rejeitado = self.status_rejeitado(pk)
+        saiu_entrega = self.status_saiu_entrega(pk)
+        entregue = self.status_entregue(pk)
+        
+        status = {
+            "criado":criado[0],
+            "aceito":aceito[0],
+            "rejeitado":rejeitado[0],
+            "saiu_entrega":saiu_entrega[0],
+            "entregue":entregue[0]
+            }
+        
+        return status
+    
+    def relatorio(self,pk):
+        media_gasto = self.consulta_media_gasto(pk)
+        maior_compra = self.consulta_maior_compra(pk)
+        mais_pedido = self.consulta_mais_pedido(pk)
+        maior_quantidade = self.consulta_maior_quantidade(pk)
+        status = self.consulta_status_venda(pk)
+        
+        consultas = {
+            "media_gasto":media_gasto[0],
+            "maior_compra":maior_compra[0],
+            "mais_pedido":mais_pedido[0],
+            "maior_quantidade":maior_quantidade[0],
+            "criado":status["criado"],
+            "aceito":status["aceito"],
+            "rejeitado":status["rejeitado"],
+            "saiu_entrega":status["saiu_entrega"],
+            "entregue":status["entregue"]
+        }
+        
+        return consultas
 
     def executar(self,sql,tupla): # É só um execute com commit
         self.conexao.execute(sql,tupla)

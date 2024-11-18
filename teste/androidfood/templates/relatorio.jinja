@@ -6,6 +6,16 @@
     <title>Relatório</title>
   </head>
   <body>
-  
+    <h1>Relatório</h1>
+
+    <p>Status criados: {{consultas["criado"]}}</p>
+    <p>Status aceitos: {{consultas["aceito"]}}</p>
+    <p>Status saiu para a entrega: {{consultas["saiu_entrega"]}}</p>
+    <p>Status entregue: {{consultas["entregue"]}}</p>
+    <p>Status rejeitados: {{consultas["rejeitado"]}}</p>
+
+    <button><a href="{{ url_for('restaurante') }}">Voltar</a></button>
+    <button><a href="{{ url_for('logout') }}">Logout</a></button>
+
   </body>
 </html>

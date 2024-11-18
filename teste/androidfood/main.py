@@ -106,4 +106,11 @@ def inserir(pk,status_check,status):
 
 @app.route("/restaurante/relatorio", methods=['GET','POST'])
 def relatorio():
-    pass
+    if session.get('login') == None or session['login'] == False:
+        session['login'] = False
+        return index()
+    
+    consultas = database.relatorio(session["pk"])
+    
+    return render_template("relatorio.jinja",consultas = consultas)
+    
