@@ -8,11 +8,33 @@
   <body>
     <h1>Relatório</h1>
 
-    <p>Status criados: {{consultas["criado"]}}</p>
-    <p>Status aceitos: {{consultas["aceito"]}}</p>
-    <p>Status saiu para a entrega: {{consultas["saiu_entrega"]}}</p>
-    <p>Status entregue: {{consultas["entregue"]}}</p>
-    <p>Status rejeitados: {{consultas["rejeitado"]}}</p>
+    <div class="media-gasto">
+      <h2>Média de gasto de cada cliente</h2>
+      {% for usuario in consultas["media_gasto"]%}
+      <div class="media-gasto-individual">
+        <p>Cliente: {{usuario[1]}}</p>
+        <p>Gasto: R$:{{usuario[0]}}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="maior-compra">
+      <h2>A maior compra</h2>
+      <p>A maior compra foi do cliente: {{consultas["maior_compra"][0]}}</p>
+      <p>Valor: R${{consultas["maior_compra"][1]}}</p>
+    </div>
+
+    <div class="mais-pedido">
+      <p>{{consultas["mais_pedido"]}}</p>
+    </div>
+
+    <div class="status">
+      <p>Status criados: {{consultas["criado"]}}</p>
+      <p>Status aceitos: {{consultas["aceito"]}}</p>
+      <p>Status saiu para a entrega: {{consultas["saiu_entrega"]}}</p>
+      <p>Status entregue: {{consultas["entregue"]}}</p>
+      <p>Status rejeitados: {{consultas["rejeitado"]}}</p>
+    </div>
 
     <button><a href="{{ url_for('restaurante') }}">Voltar</a></button>
     <button><a href="{{ url_for('logout') }}">Logout</a></button>

@@ -156,7 +156,9 @@ class Database:
             return result
         
     def consulta_media_gasto(self,pk):
-        sql = f'SELECT AVG(valor) FROM venda WHERE pk_restaurante = ? GROUP BY pk_usuario;'
+        sql = '''SELECT AVG(valor),u.nome_usuario FROM venda v
+                INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
+                WHERE pk_restaurante = ? GROUP BY v.pk_usuario;'''
         result = self.conexao.execute(sql,(pk,))
         result = result.fetchall()
         if not result:
@@ -165,9 +167,11 @@ class Database:
             return result
         
     def consulta_maior_compra(self,pk):
-        sql = f'SELECT pk_venda,MAX(valor),pk_usuario,pk_restaurante,criacao,status FROM venda WHERE pk_restaurante = ?;'
+        sql = '''SELECT u.nome_usuario,MAX(valor) FROM venda v
+                INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
+                WHERE pk_restaurante = ?;'''
         result = self.conexao.execute(sql,(pk,))
-        result = result.fetchall()
+        result = result.fetchone()
         if not result:
             return False
         else:
@@ -192,10 +196,11 @@ class Database:
         return result.fetchone()
 
     def consulta_mais_pedido(self,pk):
-        sql = '''SELECT *,COUNT(pk_produto) FROM venda_produto vp
-        INNER JOIN venda v ON v.pk_venda = vp.pk_venda 
-        WHERE pk_restaurante = ?
-        GROUP BY pk_produto ORDER BY COUNT(pk_produto) DESC LIMIT 1''' # TODO
+        sql = '''SELECT p.nome_produto,COUNT(vp.pk_produto) FROM venda_produto vp
+        INNER JOIN venda v ON v.pk_venda = vp.pk_venda
+        INNER JOIN produto p ON p.pk_produto = vp.pk_produto
+        WHERE v.pk_restaurante = ?
+        GROUP BY vp.pk_produto ORDER BY COUNT(vp.pk_produto) DESC LIMIT 1'''
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
@@ -224,6 +229,18 @@ class Database:
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
+    def depois(self):
+        sql = '''SELECT 
+    COUNT(CASE WHEN strftime('%w',criacao) = '0' THEN pk_venda ELSE NULL END) AS 'Domingo',
+    COUNT(CASE WHEN strftime('%w',criacao) = '1' THEN pk_venda ELSE NULL END) AS 'Segunda',
+    COUNT(CASE WHEN strftime('%w',criacao) = '2' THEN pk_venda ELSE NULL END) AS 'Terça',
+    COUNT(CASE WHEN strftime('%w',criacao) = '3' THEN pk_venda ELSE NULL END) AS 'Quarta',
+    COUNT(CASE WHEN strftime('%w',criacao) = '4' THEN pk_venda ELSE NULL END) AS 'Quinta',
+    COUNT(CASE WHEN strftime('%w',criacao) = '5' THEN pk_venda ELSE NULL END) AS 'Sexta',
+    COUNT(CASE WHEN strftime('%w',criacao) = '6' THEN pk_venda ELSE NULL END) AS 'Sábado'
+FROM venda v;
+'''
+    
     def consulta_status_venda(self,pk):
         criado = self.status_criado(pk)
         aceito = self.status_aceito(pk)
@@ -249,8 +266,8 @@ class Database:
         status = self.consulta_status_venda(pk)
         
         consultas = {
-            "media_gasto":media_gasto[0],
-            "maior_compra":maior_compra[0],
+            "media_gasto":media_gasto,
+            "maior_compra":maior_compra,
             "mais_pedido":mais_pedido[0],
             "maior_quantidade":maior_quantidade[0],
             "criado":status["criado"],
@@ -259,7 +276,7 @@ class Database:
             "saiu_entrega":status["saiu_entrega"],
             "entregue":status["entregue"]
         }
-        
+
         return consultas
 
     def executar(self,sql,tupla): # É só um execute com commit
