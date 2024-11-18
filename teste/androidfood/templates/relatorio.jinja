@@ -13,7 +13,7 @@
       {% for usuario in consultas["media_gasto"]%}
       <div class="media-gasto-individual">
         <p>Cliente: {{usuario[1]}}</p>
-        <p>Gasto: R$:{{usuario[0]}}</p>
+        <p>Gasto: R$:{{usuario[0] | formatoDinheiro}}</p>
       </div>
       {% endfor %}
     </div>
@@ -21,7 +21,7 @@
     <div class="maior-compra">
       <h2>A maior compra</h2>
       <p>A maior compra foi do cliente: {{consultas["maior_compra"][0]}}</p>
-      <p>Valor: R${{consultas["maior_compra"][1]}}</p>
+      <p>Valor: R$:{{consultas["maior_compra"][1] | formatoDinheiro}}</p>
     </div>
 
     <div class="mais-pedido">

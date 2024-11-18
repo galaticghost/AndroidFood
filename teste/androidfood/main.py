@@ -114,3 +114,6 @@ def relatorio():
     
     return render_template("relatorio.jinja",consultas = consultas)
     
+@app.template_filter()
+def formatoDinheiro(valor):
+    return f"{float(valor):.2f}"
