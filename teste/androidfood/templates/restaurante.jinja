@@ -7,28 +7,40 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/restaurante.css') }}" >
   </head>
   <body>
+    <header class="header">
+    
+    </header>
+    
+    
     {% if pedidos[0] is none %}
-      <p>Nenhum pedido</p>
+      <section class="pedidos">
+        <p>Nenhum pedido</p>
+      </section>
     {% else %}
-      {% for pedido in pedidos%}
-       <div class="pedidos">
-        <p>ID pedido: {{ pedido["pk"] }}</p>
-        <p>Valor: R$:{{ pedido["valor"] }}</p>
-        <p>Criação: {{ pedido["criacao"] }}</p>
-        <p>Status: {{ pedido["status"] }}</p>
-        {% if pedido["status"] == "criado" %}
-          <button><a href="{{ url_for('aceitar', pk=pedido['pk']) }}">Aceitar</a></button>
-          <button><a href="{{ url_for('rejeitar', pk=pedido['pk']) }}">Rejeitar</a></button>
-        {% elif pedido["status"] == "aceito" %}
-          <button><a href="{{ url_for('entrega', pk=pedido['pk']) }}">Saiu para a entrega</a></button>
-        {% elif pedido["status"] == "saiu para a entrega" %}
-          <button><a href="{{ url_for('entregue', pk=pedido['pk']) }}">Entregue</a></button>
-        {% endif %}
-        <hr>
-       </div>
-      {% endfor %}
+      <section class="pedidos">
+        {% for pedido in pedidos%}
+        <div class="pedido">
+          <p class="id">ID pedido: {{ pedido["pk"] }}</p>
+          <p class="valor">Valor: R$:{{ pedido["valor"] }}</p>
+          <p class="criacao">Criação: {{ pedido["criacao"] }}</p>
+          <p class="status">Status: {{ pedido["status"] }}</p>
+          {% if pedido["status"] == "criado" %}
+            <button><a href="{{ url_for('aceitar', pk=pedido['pk']) }}">Aceitar</a></button>
+            <button><a href="{{ url_for('rejeitar', pk=pedido['pk']) }}">Rejeitar</a></button>
+          {% elif pedido["status"] == "aceito" %}
+            <button><a href="{{ url_for('entrega', pk=pedido['pk']) }}">Saiu para a entrega</a></button>
+          {% elif pedido["status"] == "saiu para a entrega" %}
+            <button><a href="{{ url_for('entregue', pk=pedido['pk']) }}">Entregue</a></button>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </section>
     {% endif %}
     <button><a href="{{ url_for('relatorio') }}">Relatório</a></button>
     <button><a href="{{ url_for('logout') }}">Logout</a></button>
+
+    <footer class="footer">
+    
+    </footer>
   </body>
 </html>

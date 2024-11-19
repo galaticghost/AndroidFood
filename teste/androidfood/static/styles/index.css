@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  background-color: #fffecb;
+}
+
+.header {
+  width: 100vw;
+  height: 7vh;
+  background-color: #5448c8;
+  margin-bottom: 30px;
+  border-bottom: 5px solid black;
+}

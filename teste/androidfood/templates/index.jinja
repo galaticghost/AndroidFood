@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
 </head>
 <body>
+    <header class="header">
+    
+    </header>
     {% if login %}
         <p>Clique <a href="{{ url_for('restaurante') }}">aqui</a> para acessar os pedidos</p></p>
         <p>Clique <a href="{{ url_for('logout') }}">aqui</a> para deslogar</p>
