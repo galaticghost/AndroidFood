@@ -8,9 +8,11 @@ from hashlib import md5
 from database.database import Database
 
 app = Flask(__name__)
-key = urandom(12).hex()
-app.secret_key = key
-database = Database()
+
+key = urandom(12).hex() #Gera a chave secreta
+app.secret_key = key # Chave secreta
+
+database = Database() # Conecta a database
 
 @app.route("/index", methods=['GET','POST'])
 @app.route("/", methods=['GET','POST'])
@@ -113,7 +115,21 @@ def relatorio():
     consultas = database.relatorio(session["pk"])
     
     return render_template("relatorio.jinja",consultas = consultas)
+
+@app.route("/relatorioAdmin", methods=['GET','POST'])
+def relatorio_admin():
+    if session.get('login') == None or session['login'] == False:
+        session['login'] == False
+        return index()
     
-@app.template_filter()
-def formatoDinheiro(valor):
+    consultas = database.relatorio_administrativo()
+    
+    return render_template("relatorioAdmin.jinja", consultas = consultas)
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("/notFound.jinja")
+    
+@app.template_filter() # Função para formatar dinheiro
+def formatoDinheiro(valor): 
     return f"{float(valor):.2f}"

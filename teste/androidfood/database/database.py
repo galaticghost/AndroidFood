@@ -26,7 +26,8 @@ class Database:
                             email_usuario VARCHAR(200) NOT NULL,
                             senha_usuario VARCHAR(100) NOT NULL,
                             criacao DATE DEFAULT (datetime('now', 'localtime')),
-                            ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime'))
+                            ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime')),
+                            admin BOOLEAN NOT NULL DEFAULT 0 
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda(
                             pk_venda INTEGER PRIMARY KEY NOT NULL,
@@ -101,7 +102,7 @@ class Database:
         else:
             return True
         
-    def consulta_status(self,pk,pk_restaurante):
+    def consulta_status(self,pk,pk_restaurante): # Consulta o status do pedido 
         sql = f'SELECT status FROM venda WHERE pk_venda = ? AND pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,pk_restaurante))
         result = result.fetchone()
@@ -131,7 +132,7 @@ class Database:
         else:
             return result
         
-    def consulta_pedidos(self,pk_restaurante):
+    def consulta_pedidos(self,pk_restaurante): # Consulta os pedidos de um restaurante
         sql = f'SELECT pk_venda,valor,pk_usuario,criacao,status FROM venda WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk_restaurante,))
         return result.fetchall()
@@ -155,7 +156,7 @@ class Database:
         else:
             return result
         
-    def consulta_media_gasto(self,pk):
+    def consulta_media_gasto(self,pk): # Consulta a média do valor que cada usuario gasta no restaurante
         sql = '''SELECT AVG(valor),u.nome_usuario FROM venda v
                 INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
                 WHERE pk_restaurante = ? GROUP BY v.pk_usuario;'''
@@ -166,7 +167,7 @@ class Database:
         else:
             return result
         
-    def consulta_maior_compra(self,pk):
+    def consulta_maior_compra(self,pk): # Consulta o nome do usuario que fez a maior compra(valor) e o valor de um restaurante específico
         sql = '''SELECT u.nome_usuario,MAX(valor) FROM venda v
                 INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
                 WHERE pk_restaurante = ?;'''
@@ -177,7 +178,7 @@ class Database:
         else:
             return result
         
-    def consulta_maior_quantidade(self,pk):
+    def consulta_maior_quantidade(self,pk): # Consulta a compra com a maior quantidade de itens
         sql = '''SELECT vp.pk_venda,SUM(quantidade) FROM venda_produto vp 
             INNER JOIN venda v ON v.pk_venda = vp.pk_venda 
             WHERE v.pk_restaurante = ?
@@ -185,17 +186,17 @@ class Database:
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def consulta_maior_comissao(self):
+    def consulta_maior_comissao(self): # Consulta o restaurante com a maior comissao
         sql = f'SELECT pk_restaurante,restaurante,MAX(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
         result = self.conexao.execute(sql)
         return result.fetchone()
 
-    def consulta_menor_comissao(self):
+    def consulta_menor_comissao(self): # Consulta o restaurante com a menor comissao
         sql = f'SELECT pk_restaurante,restaurante,MIN(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
         result = self.conexao.execute(sql)
         return result.fetchone()
 
-    def consulta_mais_pedido(self,pk):
+    def consulta_mais_pedido(self,pk): # Consulta o item mais pedido de um restaurante específico
         sql = '''SELECT p.nome_produto,COUNT(vp.pk_produto) FROM venda_produto vp
         INNER JOIN venda v ON v.pk_venda = vp.pk_venda
         INNER JOIN produto p ON p.pk_produto = vp.pk_produto
@@ -204,44 +205,71 @@ class Database:
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def status_criado(self,pk):
+    def status_criado(self,pk): # Consulta a quantidade de pedidos com o status "Criado"
         sql = f'SELECT COUNT(status) FROM venda v WHERE status = "criado" AND pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def status_aceito(self,pk):
+    def status_aceito(self,pk): # Consulta a quantidade de pedidos com o status "Aceito"
         sql = f'SELECT COUNT(status) FROM venda v WHERE status = "aceito" AND pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def status_rejeitado(self,pk):
+    def status_rejeitado(self,pk): # Consulta a quantidade de pedidos com o status "Rejeitado"
         sql = f'SELECT COUNT(status) FROM venda v WHERE status = "rejeitado" AND pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
 
-    def status_saiu_entrega(self,pk):
+    def status_saiu_entrega(self,pk): # Consulta a quantidade de pedidos com o status "Saiu para a entrega"
         sql = f'SELECT COUNT(status) FROM venda v WHERE status = "saiu para entrega" AND pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def status_entregue(self,pk):
+    def status_entregue(self,pk): # Consulta a quantidade de pedidos com o status "Entregue"
         sql = f'SELECT COUNT(status) FROM venda v WHERE status = "entregue" AND pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def depois(self):
+    def depois(self): # TODO
         sql = '''SELECT 
-    COUNT(CASE WHEN strftime('%w',criacao) = '0' THEN pk_venda ELSE NULL END) AS 'Domingo',
-    COUNT(CASE WHEN strftime('%w',criacao) = '1' THEN pk_venda ELSE NULL END) AS 'Segunda',
-    COUNT(CASE WHEN strftime('%w',criacao) = '2' THEN pk_venda ELSE NULL END) AS 'Terça',
-    COUNT(CASE WHEN strftime('%w',criacao) = '3' THEN pk_venda ELSE NULL END) AS 'Quarta',
-    COUNT(CASE WHEN strftime('%w',criacao) = '4' THEN pk_venda ELSE NULL END) AS 'Quinta',
-    COUNT(CASE WHEN strftime('%w',criacao) = '5' THEN pk_venda ELSE NULL END) AS 'Sexta',
-    COUNT(CASE WHEN strftime('%w',criacao) = '6' THEN pk_venda ELSE NULL END) AS 'Sábado'
-FROM venda v;
-'''
+                COUNT(CASE WHEN strftime('%w',criacao) = '0' THEN pk_venda ELSE NULL END) AS 'Domingo',
+                COUNT(CASE WHEN strftime('%w',criacao) = '1' THEN pk_venda ELSE NULL END) AS 'Segunda',
+                COUNT(CASE WHEN strftime('%w',criacao) = '2' THEN pk_venda ELSE NULL END) AS 'Terça',
+                COUNT(CASE WHEN strftime('%w',criacao) = '3' THEN pk_venda ELSE NULL END) AS 'Quarta',
+                COUNT(CASE WHEN strftime('%w',criacao) = '4' THEN pk_venda ELSE NULL END) AS 'Quinta',
+                COUNT(CASE WHEN strftime('%w',criacao) = '5' THEN pk_venda ELSE NULL END) AS 'Sexta',
+                COUNT(CASE WHEN strftime('%w',criacao) = '6' THEN pk_venda ELSE NULL END) AS 'Sábado'
+            FROM venda v;'''
+            
+    def consulta_quantidade_usuario_restaurante(self): # Consulta quantos restaurantes e usuarios estão cadastrados na database"
+        sql = f"SELECT (SELECT COUNT(1) FROM restaurante r) AS 'restaurante', (SELECT COUNT(1) FROM usuario u ) AS 'Usuario';"
+        result = self.conexao.execute(sql)
+        return result.fetchone()
     
-    def consulta_status_venda(self,pk):
+    def consulta_valor_medio_pedido(self): # Consulta a média do ganhos de cada restaurante
+        sql = f'SELECT AVG(valor) FROM venda GROUP BY pk_restaurante;'
+        result = self.conexao.execute(sql)
+        return result.fetchall()
+    
+    def consulta_pedido_mes_restaurante(self): # Consulta a quantidade de pedidos de cada mês de todos os restaurantes
+        sql = '''SELECT
+                COUNT(CASE WHEN strftime('%m', criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
+                COUNT(CASE WHEN strftime('%m', criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
+                COUNT(CASE WHEN strftime('%m', criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
+                COUNT(CASE WHEN strftime('%m', criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
+                COUNT(CASE WHEN strftime('%m', criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
+                COUNT(CASE WHEN strftime('%m', criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
+                COUNT(CASE WHEN strftime('%m', criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
+                COUNT(CASE WHEN strftime('%m', criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
+                COUNT(CASE WHEN strftime('%m', criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
+                COUNT(CASE WHEN strftime('%m', criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
+                COUNT(CASE WHEN strftime('%m', criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
+                COUNT(CASE WHEN strftime('%m', criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro'
+            FROM venda GROUP BY pk_restaurante ;'''
+        result = self.conexao.execute(sql)
+        return result.fetchall()
+    
+    def consulta_status_venda(self,pk): # Executa as consultas da venda, cria um dicionario e retorna
         criado = self.status_criado(pk)
         aceito = self.status_aceito(pk)
         rejeitado = self.status_rejeitado(pk)
@@ -258,7 +286,7 @@ FROM venda v;
         
         return status
     
-    def relatorio(self,pk):
+    def relatorio(self,pk): # Executa o relatório para o restaurante
         media_gasto = self.consulta_media_gasto(pk)
         maior_compra = self.consulta_maior_compra(pk)
         mais_pedido = self.consulta_mais_pedido(pk)
@@ -268,8 +296,8 @@ FROM venda v;
         consultas = {
             "media_gasto":media_gasto,
             "maior_compra":maior_compra,
-            "mais_pedido":mais_pedido[0],
-            "maior_quantidade":maior_quantidade[0],
+            "mais_pedido":mais_pedido,
+            "maior_quantidade":maior_quantidade,
             "criado":status["criado"],
             "aceito":status["aceito"],
             "rejeitado":status["rejeitado"],
@@ -277,6 +305,17 @@ FROM venda v;
             "entregue":status["entregue"]
         }
 
+        return consultas
+    
+    def relatorio_administrativo(self): # Executa o relatório para o administrador
+        quantidade_res_usu = self.consulta_quantidade_usuario_restaurante()
+        valor_medio = self.consulta_valor_medio_pedido()
+        pedido_mes = self.consulta_pedido_mes_restaurante()
+        
+        consultas = {
+            
+        }
+        
         return consultas
 
     def executar(self,sql,tupla): # É só um execute com commit

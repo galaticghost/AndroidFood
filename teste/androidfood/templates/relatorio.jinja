@@ -12,23 +12,32 @@
       <h2>Média de gasto de cada cliente</h2>
       {% for usuario in consultas["media_gasto"]%}
       <div class="media-gasto-individual">
-        <p>Cliente: {{usuario[1]}}</p>
-        <p>Gasto: R$:{{usuario[0] | formatoDinheiro}}</p>
+        <p>Cliente: {{ usuario[1] }}</p>
+        <p>Gasto: R$:{{ usuario[0] | formatoDinheiro }}</p>
       </div>
       {% endfor %}
     </div>
 
     <div class="maior-compra">
       <h2>A maior compra</h2>
-      <p>A maior compra foi do cliente: {{consultas["maior_compra"][0]}}</p>
-      <p>Valor: R$:{{consultas["maior_compra"][1] | formatoDinheiro}}</p>
+      <p>A maior compra foi do cliente: {{ consultas["maior_compra"][0] }}</p>
+      <p>Valor: R$:{{ consultas["maior_compra"][1] | formatoDinheiro }}</p>
     </div>
 
     <div class="mais-pedido">
-      <p>{{consultas["mais_pedido"]}}</p>
+      <h2>O produto mais pedido</h2>
+      <p>O produto mais pedido foi {{ consultas["mais_pedido"][0] }}</p>
+      <p>Com {{ consultas["mais_pedido"][1] }} pedidos</p>
+    </div>
+
+    <div class="maior-quantidade">
+      <h2>Maior quantidade de itens</h2>
+      <p>A venda com maior quantidade de itens foi a venda {{ consultas["maior_quantidade"][0] }}</p>
+      <p>Com {{ consultas["maior_quantidade"][1] }} itens</p>
     </div>
 
     <div class="status">
+      <h2>Status</h2>
       <p>Status criados: {{consultas["criado"]}}</p>
       <p>Status aceitos: {{consultas["aceito"]}}</p>
       <p>Status saiu para a entrega: {{consultas["saiu_entrega"]}}</p>
