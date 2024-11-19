@@ -14,14 +14,14 @@ app.secret_key = key # Chave secreta
 
 database = Database() # Conecta a database
 
-@app.route("/index", methods=['GET','POST'])
+@app.route("/index", methods=['GET','POST']) # tela inicial
 @app.route("/", methods=['GET','POST'])
 def index():
-    if session.get('login') == None:
+    if session.get('login') == None: # Ve se tem login
         session['login'] = False
     return render_template("index.jinja",login = session['login'])
 
-@app.route("/login", methods=['GET','POST'])
+@app.route("/login", methods=['GET','POST']) # login
 def login():
     falha = False
     
@@ -116,7 +116,7 @@ def relatorio():
     
     return render_template("relatorio.jinja",consultas = consultas)
 
-@app.route("/relatorioAdmin", methods=['GET','POST'])
+@app.route("/relatorioAdmin", methods=['GET','POST']) # relatório do admin
 def relatorio_admin():
     if session.get('login') == None or session['login'] == False:
         session['login'] == False
@@ -126,7 +126,7 @@ def relatorio_admin():
     
     return render_template("relatorioAdmin.jinja", consultas = consultas)
 
-@app.errorhandler(404)
+@app.errorhandler(404) # 404
 def not_found(e):
     return render_template("/notFound.jinja")
     

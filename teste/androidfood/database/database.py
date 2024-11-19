@@ -269,6 +269,13 @@ class Database:
         result = self.conexao.execute(sql)
         return result.fetchall()
     
+    def consulta_pedidos_unico(self):
+        sql = '''SELECT r.restaurante, COUNT(DISTINCT pk_usuario) as 'usuarios' FROM venda v
+                INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
+                GROUP BY r.pk_restaurante ;'''
+        result = self.conexao.execute(sql)
+        return result.fetchall()
+    
     def consulta_status_venda(self,pk): # Executa as consultas da venda, cria um dicionario e retorna
         criado = self.status_criado(pk)
         aceito = self.status_aceito(pk)
