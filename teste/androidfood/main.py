@@ -118,9 +118,9 @@ def relatorio():
 
 @app.route("/relatorioAdmin", methods=['GET','POST']) # relatório do admin
 def relatorio_admin():
-    if session.get('login') == None or session['login'] == False:
+    '''if session.get('login') == None or session['login'] == False:
         session['login'] == False
-        return index()
+        return index()'''
     
     consultas = database.relatorio_administrativo()
     

@@ -6,6 +6,49 @@
     <title>Relatório Administrativo</title>
 </head>
 <body>
+    <h1>Relatório Administrativo</h1>
+    {% if consultas["falha_consulta"] == true %}
+        <p>Falha nas consultas</p>
+    {% else %}
+        <section class="restaurante-usuario">
+            <h2>Quantidade de restaurantes e usuários cadastrados</h2>
+            <p>Restaurantes: {{ consultas["res_usu"][0] }}</p>
+            <p>Usuários: {{ consultas["res_usu"][1] }}</p>
+        </section>
+
+        <section class="valor-medio">
+            <h2>Valor médio das compras de cada restaurante</h2>
+            {% for restaurante in consultas["valor_medio"] %}
+                <div class="valor-medio-card">
+                    <h3>Restaurante: {{ restaurante[1] }}</h3>
+                    <p>Valor médio de venda: R${{ restaurante[0] | formatoDinheiro }}</p>
+                </div>
+            {% endfor %}
+        </section>
+
+        <section class="pedido-mes">
+            <h2>Pedidos por mês de cada restaurante</h2>
+            {% for restaurante in consultas["pedido_mes"] %}
+                <div class="pedido-mes-card">
+                    <h3>Restaurante: {{ restaurante[12] }}</h3>
+                    <p>| Janeiro | {{restaurante[0]}} | Fevereiro | {{restaurante[1]}} | Março | {{restaurante[2]}}</p>
+                    <p>| Abril | {{restaurante[3]}} | Maio | {{restaurante[4]}} | Junho | {{restaurante[5]}}</p>
+                    <p>| Julho | {{restaurante[6]}} | Agosto | {{restaurante[7]}} | Setembro | {{restaurante[8]}}</p>
+                    <p>| Outubro | {{restaurante[9]}} | Novembro | {{restaurante[10]}} | Dezembro | {{restaurante[11]}}</p>
+                </div>
+            {% endfor %}
+        </section>
+
+        <section class="usuario-unico">
+            <h2>Usuários únicos por restaurante</h2>
+            {% for restaurante in consultas["usuario_unico"] %}
+                <div class="usuario-unico-card">
+                    <p>Restaurante: {{ restaurante[0] }} | Usuários: {{ restaurante[1] }}</p>
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+
     <button><a href="{{ url_for('logout') }}">Logout</a></button>
 </body>
 </html>

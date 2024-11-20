@@ -247,29 +247,34 @@ class Database:
         return result.fetchone()
     
     def consulta_valor_medio_pedido(self): # Consulta a média do ganhos de cada restaurante
-        sql = f'SELECT AVG(valor) FROM venda GROUP BY pk_restaurante;'
+        sql = '''SELECT AVG(valor), r.restaurante FROM venda
+                INNER JOIN restaurante r  ON venda.pk_restaurante  = r.pk_restaurante 
+                GROUP BY venda.pk_restaurante;'''
         result = self.conexao.execute(sql)
         return result.fetchall()
     
     def consulta_pedido_mes_restaurante(self): # Consulta a quantidade de pedidos de cada mês de todos os restaurantes
         sql = '''SELECT
-                COUNT(CASE WHEN strftime('%m', criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
-                COUNT(CASE WHEN strftime('%m', criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
-                COUNT(CASE WHEN strftime('%m', criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
-                COUNT(CASE WHEN strftime('%m', criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
-                COUNT(CASE WHEN strftime('%m', criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
-                COUNT(CASE WHEN strftime('%m', criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
-                COUNT(CASE WHEN strftime('%m', criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
-                COUNT(CASE WHEN strftime('%m', criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
-                COUNT(CASE WHEN strftime('%m', criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
-                COUNT(CASE WHEN strftime('%m', criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
-                COUNT(CASE WHEN strftime('%m', criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
-                COUNT(CASE WHEN strftime('%m', criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro'
-            FROM venda GROUP BY pk_restaurante ;'''
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro',
+            	r.restaurante 
+                FROM venda v
+                INNER JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
+                GROUP BY v.pk_restaurante ;'''
         result = self.conexao.execute(sql)
         return result.fetchall()
     
-    def consulta_pedidos_unico(self):
+    def consulta_pedidos_unico(self): # Consulta usuarios unicos em cada restaurante
         sql = '''SELECT r.restaurante, COUNT(DISTINCT pk_usuario) as 'usuarios' FROM venda v
                 INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
                 GROUP BY r.pk_restaurante ;'''
@@ -318,9 +323,13 @@ class Database:
         quantidade_res_usu = self.consulta_quantidade_usuario_restaurante()
         valor_medio = self.consulta_valor_medio_pedido()
         pedido_mes = self.consulta_pedido_mes_restaurante()
+        usuario_unico = self.consulta_pedidos_unico()
         
         consultas = {
-            
+            "res_usu":quantidade_res_usu,
+            "valor_medio":valor_medio,
+            "pedido_mes":pedido_mes,
+            "usuario_unico":usuario_unico
         }
         
         return consultas
