@@ -11,11 +11,16 @@
     
     </header>
     {% if login %}
-        <p>Clique <a href="{{ url_for('restaurante') }}">aqui</a> para acessar os pedidos</p></p>
+        {% if session.get('admin') != none and session['admin'] == 1 %}
+            <p>Clique <a href="{{ url_for('relatorio_admin') }}">aqui</a> para acessar os relatórios</p>
+        {% else %}
+            <p>Clique <a href="{{ url_for('restaurante') }}">aqui</a> para acessar os pedidos</p>
+        {% endif %}
         <p>Clique <a href="{{ url_for('logout') }}">aqui</a> para deslogar</p>
     {% else %}
         <p>Você não está logado.</p>
         <p>Clique <a href="{{ url_for('login') }}">aqui</a> para logar</p>
+        <p>Caso for admin clique <a href="{{ url_for('login_admin') }}">aqui</a> para logar</p>
     {% endif %}
 </body>
 </html>

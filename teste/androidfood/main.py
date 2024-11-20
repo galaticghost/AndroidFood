@@ -35,8 +35,9 @@ def login():
         senha = md5(senha.encode())
         senha = senha.hexdigest()
         
-        restaurante_query = database.consulta_restaurante(email,senha)
-        if restaurante_query is not None:
+        restaurante_query = database.consulta_login("restaurante",email,senha) == False
+        if restaurante_query is False:
+            restaurante_query = database.consulta_restaurante(email,senha)
             session['pk'] = restaurante_query[0]
             session['nome'] = restaurante_query[1]
             session['comissao'] = restaurante_query[2]
@@ -53,7 +54,41 @@ def login():
             session['login'] = False
             falha = True
     
-    return render_template("login.jinja",login = session['login'],falha = falha)
+    return render_template("login.jinja",login = session['login'],falha = falha,type_login = "login")
+
+@app.route("/login/admin", methods=['GET','POST']) # login
+def login_admin():
+    falha = False
+    
+    if session.get('login') == None:
+        session['login'] = False
+    
+    if request.method == 'POST':
+        email = request.form['email'].lower().strip()
+        senha = request.form['senha']
+        senha = md5(senha.encode())
+        senha = senha.hexdigest()
+        
+        admin_query = database.consulta_login("usuario",email,senha)
+        if admin_query is True and database.consulta_admin(email,senha) == 1:
+            admin_query = database.consulta_usuario(email,senha)
+            session['pk'] = admin_query[0]
+            session['nome'] = admin_query[1]
+            session['ultima_atualizacao'] = admin_query[2]
+            session['admin'] = 1
+            
+            database.executar("""UPDATE usuario 
+            SET ultima_atualizacao = datetime('now','localtime') 
+            WHERE email_usuario = ? AND senha_usuario = ?""",(email,senha)) # atualiza a data do ultimo login
+            
+            session['login'] = True
+
+            return render_template("index.jinja",login = session['login'])
+        else:
+            session['login'] = False
+            falha = True
+    
+    return render_template("login.jinja",login = session['login'],falha = falha,type_login = "login_admin")
 
 @app.route('/logout', methods=['GET','POST'])
 def logout():
@@ -64,7 +99,7 @@ def logout():
 def restaurante():
     if session.get('login') == None or session['login'] == False:
         session['login'] = False
-        return render_template("index.jinja",login = session['login'])
+        return index()
     vendas = database.consulta_pedidos(session['pk'])
     pedidos = []
     for venda in vendas:
@@ -118,9 +153,9 @@ def relatorio():
 
 @app.route("/relatorioAdmin", methods=['GET','POST']) # relatório do admin
 def relatorio_admin():
-    '''if session.get('login') == None or session['login'] == False:
-        session['login'] == False
-        return index()'''
+    if session.get('login') == None or session['login'] == False:
+        session['login'] = False
+        return index()
     
     consultas = database.relatorio_administrativo()
     

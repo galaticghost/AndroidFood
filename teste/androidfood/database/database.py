@@ -61,6 +61,12 @@ class Database:
         else:
             return True
         
+    def consulta_admin(self,email,senha):
+        sql = f'SELECT admin FROM usuario WHERE email_usuario = ? AND senha_usuario = ?;'
+        result = self.conexao.execute(sql,(email,senha))
+        result = result.fetchone()
+        return result[0] 
+        
     def consulta_restaurante_nome(self,pk): # Consulta o nome do restaurante
         sql = 'SELECT restaurante FROM restaurante WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))

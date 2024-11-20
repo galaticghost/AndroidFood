@@ -14,7 +14,7 @@
       {% if falha %}
         <p>Login inválido</p>
       {% endif %}
-      <form method="post" action="{{ url_for('login') }}">
+      <form method="post" action="{{ url_for(type_login) }}">
         <p><label for="email">Email: </label></p>
         <p><input type="text" id="email" name="email"></p>
         <p><label for="senha">Senha: </label></p>
