@@ -188,7 +188,7 @@ class Database:
         sql = '''SELECT vp.pk_venda,SUM(quantidade) FROM venda_produto vp 
             INNER JOIN venda v ON v.pk_venda = vp.pk_venda 
             WHERE v.pk_restaurante = ?
-            GROUP BY vp.pk_venda ORDER BY SUM(quantidade) DESC'''
+            GROUP BY vp.pk_venda ORDER BY SUM(quantidade) DESC LIMIT 1'''
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
@@ -248,7 +248,7 @@ class Database:
             FROM venda v;'''
             
     def consulta_quantidade_usuario_restaurante(self): # Consulta quantos restaurantes e usuarios estão cadastrados na database"
-        sql = f"SELECT (SELECT COUNT(1) FROM restaurante r) AS 'restaurante', (SELECT COUNT(1) FROM usuario u ) AS 'Usuario';"
+        sql = f"SELECT (SELECT COUNT(1) FROM restaurante r) AS 'restaurante', (SELECT COUNT(1) FROM usuario u WHERE admin = 0) AS 'Usuario';"
         result = self.conexao.execute(sql)
         return result.fetchone()
     

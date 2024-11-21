@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Racing+Sans+One&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
-    
+      <h1>ANDROID FOOD</h1>
+      <p>O FOOD MAIS ANDROID DOS FOODS DO ANDROID</p>
     </header>
+
     {% if login %}
         {% if session.get('admin') != none and session['admin'] == 1 %}
             <p>Clique <a href="{{ url_for('relatorio_admin') }}">aqui</a> para acessar os relatórios</p>
@@ -19,7 +24,7 @@
         <p>Clique <a href="{{ url_for('logout') }}">aqui</a> para deslogar</p>
     {% else %}
         <p>Você não está logado.</p>
-        <p>Clique <a href="{{ url_for('login') }}">aqui</a> para logar</p>
+        <p>Caso for um restaurante clique <a href="{{ url_for('login') }}">aqui</a> para logar</p>
         <p>Caso for admin clique <a href="{{ url_for('login_admin') }}">aqui</a> para logar</p>
     {% endif %}
 </body>

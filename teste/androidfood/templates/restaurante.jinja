@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{nome}}</title>
     <link rel="stylesheet" href="{{ url_for('static',filename='styles/restaurante.css') }}" >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Racing+Sans+One&display=swap" rel="stylesheet">
   </head>
   <body>
     <header class="header">
-    
+      <h1>ANDROID FOOD</h1>
+      <p>O FOOD MAIS ANDROID DOS FOODS DO ANDROID</p>
     </header>
     
     
@@ -25,19 +29,19 @@
           <p class="criacao">Criação: {{ pedido["criacao"] }}</p>
           <p class="status">Status: {{ pedido["status"] }}</p>
           {% if pedido["status"] == "criado" %}
-            <button><a href="{{ url_for('aceitar', pk=pedido['pk']) }}">Aceitar</a></button>
-            <button><a href="{{ url_for('rejeitar', pk=pedido['pk']) }}">Rejeitar</a></button>
+           <a href="{{ url_for('aceitar', pk=pedido['pk']) }}"> <button>Aceitar</button></a>
+            <a href="{{ url_for('rejeitar', pk=pedido['pk']) }}"><button>Rejeitar</button></a>
           {% elif pedido["status"] == "aceito" %}
-            <button><a href="{{ url_for('entrega', pk=pedido['pk']) }}">Saiu para a entrega</a></button>
+            <a href="{{ url_for('entrega', pk=pedido['pk']) }}"><button>Saiu para a entrega</button></a>
           {% elif pedido["status"] == "saiu para a entrega" %}
-            <button><a href="{{ url_for('entregue', pk=pedido['pk']) }}">Entregue</a></button>
+            <a href="{{ url_for('entregue', pk=pedido['pk']) }}"><button>Entregue</button></a>
           {% endif %}
         </div>
         {% endfor %}
       </section>
     {% endif %}
-    <button><a href="{{ url_for('relatorio') }}">Relatório</a></button>
-    <button><a href="{{ url_for('logout') }}">Logout</a></button>
+    <a href="{{ url_for('relatorio') }}"><button class="util-button">Relatório</button></a>
+    <a href="{{ url_for('logout') }}"><button class="util-button">Logout</button></a>
 
     <footer class="footer">
     

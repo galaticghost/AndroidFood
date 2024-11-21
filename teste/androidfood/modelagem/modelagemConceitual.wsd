@@ -1,0 +1,56 @@
+@startchen
+
+entity usuario{
+id <<key>>
+nome
+email
+senha
+criacao
+ultima atualizacao
+admin
+}
+
+entity venda {
+id <<key>>
+valor
+criacao
+status
+}
+
+entity restaurante {
+id <<key>>
+nome
+email
+senha
+criacao
+ultima atualizacao
+tem produtos
+}
+
+entity produto {
+id <<key>>
+nome
+preco
+}
+
+relationship pede {
+}
+
+relationship possui {
+}
+
+relationship faz_parte{
+id <<key>>
+quantidade
+valor_total
+}
+
+usuario -(0,N)- pede
+venda -1- pede
+
+restaurante -1- possui
+produto -(0,N)- possui
+
+faz_parte -(1,N)- venda
+faz_parte -(0,N)- produto
+@endchen

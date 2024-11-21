@@ -1,0 +1,59 @@
+@startuml AndroidFood
+
+entity usuario{
+    pk_usuario INTEGER <<PK>> NOT NULL
+    --
+    nome_usuario VARCHAR NOT NULL
+    email_usuario VARCHAR NOT NULL
+    senha_usuario VARCHAR NOT NULL
+    criacao DATE NOT NULL
+    ultima_atualizacao DATE NOT NULL
+    admin BOOLEAN NOT NULL DEFAULT 0
+}
+
+entity venda{
+    pk_venda INTEGER <<PK>> NOT NULL
+    pk_usuario INTEGER <<FK>> NOT NULL
+    pk_restaurante INTEGER <<FK>> NOT NULL
+    --
+    valor NUMERIC CHECK(valor > 0) NOT NULL
+    criacao DATE NOT NULL
+    status VARCHAR NOT NULL DEFAULT "criado"
+}
+
+entity venda_produto{
+    pk_venda_produto INTEGER <<PK>> NOT NULL
+    pk_venda INTEGER <<FK>> NOT NULL
+    pk_produto <<FK>> NOT NULL
+    --
+    quantidade INTEGER NOT NULL
+    valor_total NUMERIC NOT NULL
+}
+
+entity produto{
+    pk_produto INTEGER <<PK>> NOT NULL
+    pk_restaurante INTEGER <<FK>> NOT NULL
+    --
+    nome_produto VARCHAR NOT NULL
+    preco NUMERIC CHECK(preco > 0) NOT NULL
+}
+
+entity restaurante{
+    pk_restaurante INTEGER <<PK>> NOT NULL
+    --
+    restaurante VARCHAR NOT NULL
+    comissao INTEGER NOT NULL
+    email_restaurante VARCHAR NOT NULL
+    senha_restaurante VARCHAR NOT NULL
+    criacao DATE NOT NULL
+    ultima_atualizacao DATE NOT NULL
+    tem_produtos BOOLEAN NOT NULL DEFAULT 0
+}
+
+usuario ||--o{ venda
+restaurante ||--o{ produto
+restaurante ||--o{ venda
+venda ||--|{ venda_produto
+venda_produto }o--|| produto
+
+@enduml 

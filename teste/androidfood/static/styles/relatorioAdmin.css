@@ -6,10 +6,6 @@ body {
   max-width: 100%;
 }
 
-form p {
-  margin: 5px;
-}
-
 .header {
   width: calc(100% - 20px);
   height: 9vh;
