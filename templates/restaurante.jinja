@@ -25,7 +25,7 @@
         {% for pedido in pedidos%}
         <div class="pedido">
           <p class="id">ID pedido: {{ pedido["pk"] }}</p>
-          <p class="valor">Valor: R$:{{ pedido["valor"] }}</p>
+          <p class="valor">Valor: R$:{{ pedido["valor"] | formatoDinheiro }}</p>
           <p class="criacao">Criação: {{ pedido["criacao"] }}</p>
           <p class="status">Status: {{ pedido["status"] }}</p>
           {% if pedido["status"] == "criado" %}

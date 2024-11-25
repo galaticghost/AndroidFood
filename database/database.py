@@ -51,7 +51,7 @@ class Database:
     def __str__(self):
         return f"{self.conexao}"
     
-    def check_admin(self):
+    def check_admin(self): # Vê se existe um usuário admin no sistema
         sql = f'SELECT 1 FROM usuario WHERE admin = 1;'
         result = self.conexao.execute(sql)
         if result.fetchone() == None:
@@ -71,13 +71,13 @@ class Database:
         else:
             return True
         
-    def consulta_admin(self,email,senha):
+    def consulta_admin(self,email,senha): # Verifica se um usuario é um admin
         sql = f'SELECT admin FROM usuario WHERE email_usuario = ? AND senha_usuario = ?;'
         result = self.conexao.execute(sql,(email,senha))
         result = result.fetchone()
         return result[0]
     
-    def consulta_restaurante_produtos(self,pk):
+    def consulta_restaurante_produtos(self,pk): # Conta a quantidade de produtos de um restaurante
         sql = f'SELECT COUNT(1) FROM venda WHERE pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         if result.fetchone()[0] == 0:
@@ -310,7 +310,7 @@ class Database:
         result = self.conexao.execute(sql)
         return result.fetchall()
     
-    def consulta_restaurantes(self):
+    def consulta_restaurantes(self): # Consulta a pk e o nome de todos os restaurantes
         sql = f'SELECT pk_restaurante, restaurante FROM restaurante'
         result = self.conexao.execute(sql)
         if not result:

@@ -23,12 +23,12 @@ def index():
 
 @app.route("/login", methods=['GET','POST']) # login do restaurante
 def login():
-    falha = False
+    falha = False # Inicialmente não possui falha
     
-    if session.get('login') == None:
+    if session.get('login') == None: # Caso não tenha login na sessão
         session['login'] = False
     
-    if request.method == 'POST':
+    if request.method == 'POST': # Pega os envios
         email = request.form['email'].lower().strip()
         
         senha = request.form['senha']
@@ -60,12 +60,12 @@ def login():
 
 @app.route("/login/admin", methods=['GET','POST']) # login do admin
 def login_admin():
-    falha = False
+    falha = False # Inicialmente não possui falha
     
-    if session.get('login') == None:
+    if session.get('login') == None: # Caso não tenha login na sessão
         session['login'] = False
     
-    if request.method == 'POST':
+    if request.method == 'POST': # Pega os envios
         email = request.form['email'].lower().strip()
         senha = request.form['senha']
         senha = md5(senha.encode())
@@ -99,13 +99,17 @@ def logout(): # Logout
     return index()
 
 @app.route('/restaurante', methods=['GET','POST'])
-def restaurante():
+def restaurante(): # Mostra os pedidos do restaurante que não estão concluidos ou rejeitados
     if (session.get('login') == None or session['login'] == False) or (session.get('restaurante') == None or session['restaurante'] == False):
         return index()
-    vendas = database.consulta_pedidos(session['pk'])
+    
+    vendas = database.consulta_pedidos(session['pk']) # Consulta os pedidos do restaurante
+    
     pedidos = []
+    
     for venda in vendas:
-        if venda[4] != "cancelado" or venda[4] == "entregue":
+        if (venda[4] != "rejeitado") and (venda[4] != "entregue"): # Caso não for entregue ou rejeitado
+            
             pedido = {
                         "pk": venda[0],
                         "valor": venda[1],
@@ -113,9 +117,10 @@ def restaurante():
                         "criacao": venda[3],
                         "status": venda[4]
                     }
+            
             pedidos.append(pedido)
     
-    session['pedidos'] = pedidos
+    session['pedidos'] = pedidos 
     
     return render_template("restaurante.jinja",nome = session['nome'],pedidos = session['pedidos'])
 
@@ -143,11 +148,11 @@ def inserir(pk,status_check,status): # Atualiza o status do pedido
     return restaurante()
 
 @app.route("/restaurante/relatorio", methods=['GET','POST'])
-def relatorio():
+def relatorio(): # relatorio
     if (session.get('login') == None or session['login'] == False) or (session.get('restaurante') == None or session['restaurante'] == False):
         return index()
     
-    consultas = database.relatorio(session["pk"])
+    consultas = database.relatorio(session["pk"]) # Consulta as consultas com a pk do restaurante
     
     return render_template("relatorio.jinja",consultas = consultas)
 
@@ -174,7 +179,7 @@ def restaurantes_admin(): # Mostra os restaurantes pro admin
     if (session.get('login') == None or session['login'] == False) or (session.get('admin') == None or session['admin'] == False):
         return index()
     
-    restaurantes = database.consulta_restaurantes()
+    restaurantes = database.consulta_restaurantes() # Consulta as consultas com a pk do restaurante escolhido
 
     return render_template("adminRestaurantes.jinja", restaurantes = restaurantes)
 
