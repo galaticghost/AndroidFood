@@ -14,7 +14,7 @@
       <h1>ANDROID FOOD</h1>
       <p>O FOOD MAIS ANDROID DOS FOODS DO ANDROID</p>
     </header>
-
+    <section class="section-main">
     {% if login %}
         {% if session.get('admin') != none and session['admin'] == 1 %}
             <p>Clique <a href="{{ url_for('relatorio_admin') }}">aqui</a> para acessar os relatórios</p>
@@ -27,5 +27,6 @@
         <p>Caso for um restaurante clique <a href="{{ url_for('login') }}">aqui</a> para logar</p>
         <p>Caso for admin clique <a href="{{ url_for('login_admin') }}">aqui</a> para logar</p>
     {% endif %}
+    </section>
 </body>
 </html>

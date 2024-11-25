@@ -26,7 +26,7 @@ class Usuario():
         self.senha = hashlib.md5(self.senha.encode()) # Depois ela é criptografada
         self.senha = self.senha.hexdigest() # E convertida em str
 
-        if self.database.consulta_login("usuario",self.email,self.senha) == False: #consulta no banco se o login existe
+        if (self.database.consulta_login("usuario",self.email,self.senha) == False or self.database.consulta_admin(self.email,self.senha) == 1): #consulta no banco se o login existe
             print("Usuário inválido")
             time.sleep(2)
             return False

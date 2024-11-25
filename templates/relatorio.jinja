@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/relatorio.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Racing+Sans+One&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header class="header">
+      <h1>ANDROID FOOD</h1>
+      <p>O FOOD MAIS ANDROID DOS FOODS DO ANDROID</p>
+    </header>
+
+    <h2 class="title">Relatório</h2>
+      {% if consultas["check"] != false %}
+        <section class="section-main">
+        <div class="media-gasto">
+          <h3>Média de gasto de cada cliente</h3>
+          {% for usuario in consultas["media_gasto"]%}
+          <div class="media-gasto-individual">
+            <p>Cliente: {{ usuario[1] }}</p>
+            <p>Gasto: R$:{{ usuario[0] | formatoDinheiro }}</p>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="maior-compra">
+          <h3>A maior compra</h3>
+          <p>A maior compra foi do cliente: {{ consultas["maior_compra"][0] }}</p>
+          <p>Valor: R$:{{ consultas["maior_compra"][1] | formatoDinheiro }}</p>
+        </div>
+
+        <div class="mais-pedido">
+          <h3>O produto mais pedido</h3>
+          <p>O produto mais pedido foi {{ consultas["mais_pedido"][0] }}</p>
+          <p>Com {{ consultas["mais_pedido"][1] }} {{ 'pedido' if consultas["mais_pedido"][1] == 1 else 'pedidos'}}</p>
+        </div>
+
+        <div class="maior-quantidade">
+          <h3>Maior quantidade de itens</h3>
+          <p>A venda com maior quantidade de itens foi a venda {{ consultas["maior_quantidade"][0] }}</p>
+          <p>Com {{ consultas["maior_quantidade"][1] }} {{ 'item' if consultas["maior_quantidade"][1] == 1 else 'itens'}}</p>
+        </div>
+
+        <div class="status">
+          <h3>Status</h3>
+          <p>Status criados: {{consultas["criado"]}}</p>
+          <p>Status aceitos: {{consultas["aceito"]}}</p>
+          <p>Status saiu para a entrega: {{consultas["saiu_entrega"]}}</p>
+          <p>Status entregue: {{consultas["entregue"]}}</p>
+          <p>Status rejeitados: {{consultas["rejeitado"]}}</p>
+        </div>
+      </section>
+    {% else %}
+      <section class="section-main">
+        <p>Seu restaurante não possui vendas</p>
+      </section>
+    {% endif %}
+    <section class="buttons">
+      <button><a href="{{ url_for('restaurante') }}">Voltar</a></button>
+      <button><a href="{{ url_for('logout') }}">Logout</a></button>
+    </section>
+  </body>
+</html>

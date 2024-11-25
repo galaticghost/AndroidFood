@@ -3,7 +3,7 @@ import sqlite3
 class Database:
     
     def __init__(self): # Recebe uma conexão e cria as tabelas se elas não existirem
-        self.conexao = sqlite3.connect("androidfood.db")
+        self.conexao = sqlite3.connect("androidfood.db",check_same_thread=False)
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS restaurante (
                             pk_restaurante INTEGER PRIMARY KEY NOT NULL,
                                 restaurante VARCHAR(100) NOT NULL,
@@ -26,7 +26,8 @@ class Database:
                             email_usuario VARCHAR(200) NOT NULL,
                             senha_usuario VARCHAR(100) NOT NULL,
                             criacao DATE DEFAULT (datetime('now', 'localtime')),
-                            ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime'))
+                            ultima_atualizacao DATE DEFAULT (datetime('now', 'localtime')),
+                            admin BOOLEAN NOT NULL DEFAULT 0 
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda(
                             pk_venda INTEGER PRIMARY KEY NOT NULL,
@@ -34,7 +35,7 @@ class Database:
                             pk_usuario INTEGER REFERENCES usuario NOT NULL,
                             pk_restaurante INTEGER REFERENCES restaurante NOT NULL,
                             criacao DATE DEFAULT(datetime('now', 'localtime')),
-                            status VARCHAR(50)
+                            status VARCHAR(50) DEFAULT "criado"
                             );''')
         self.conexao.execute('''CREATE TABLE IF NOT EXISTS venda_produto(
                             pk_venda_produto INTEGER PRIMARY KEY NOT NULL,
@@ -56,6 +57,20 @@ class Database:
         sql = f'SELECT email_{tabela},senha_{tabela} FROM {tabela} WHERE email_{tabela} = ? AND senha_{tabela} = ?;' # comando sql
         result = self.conexao.execute(sql,(email,senha)) # result recebe os resultados da query
         if result.fetchone() == None: #Caso result esteje vazio ele retorna falso 
+            return False
+        else:
+            return True
+        
+    def consulta_admin(self,email,senha):
+        sql = f'SELECT admin FROM usuario WHERE email_usuario = ? AND senha_usuario = ?;'
+        result = self.conexao.execute(sql,(email,senha))
+        result = result.fetchone()
+        return result[0]
+    
+    def consulta_restaurante_produtos(self,pk):
+        sql = f'SELECT COUNT(1) FROM venda WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        if result.fetchone()[0] == 0:
             return False
         else:
             return True
@@ -101,6 +116,22 @@ class Database:
         else:
             return True
         
+    def consulta_status(self,pk,pk_restaurante): # Consulta o status do pedido 
+        sql = f'SELECT status FROM venda WHERE pk_venda = ? AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,pk_restaurante))
+        result = result.fetchone()
+        match(result[0]):
+            case 'aceito':
+                return 'aceito'
+            case 'criado':
+                return 'criado'
+            case 'rejeitado':
+                return 'rejeitado'
+            case 'saiu para a entrega':
+                return 'saiu para a entrega'
+            case 'entregue':
+                return 'entregue'
+
     def consulta_pk_venda(self,pk): # Consulta o pk da venda mais recente feita pelo usuario
         sql = 'SELECT pk_venda FROM venda WHERE pk_usuario = ? ORDER BY criacao DESC LIMIT 1;'
         result = self.conexao.execute(sql,(pk,))
@@ -114,6 +145,11 @@ class Database:
             return False
         else:
             return result
+        
+    def consulta_pedidos(self,pk_restaurante): # Consulta os pedidos de um restaurante
+        sql = f'SELECT pk_venda,valor,pk_usuario,criacao,status FROM venda WHERE pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk_restaurante,))
+        return result.fetchall()
         
     def consulta_venda_produtos(self,pk_venda): # Consulta a relação da venda_produto e os nomes e preços dos produtos relacionados
         sql = f'SELECT venda_produto.quantidade,venda_produto.valor_total,produto.nome_produto,produto.preco FROM venda_produto INNER JOIN produto ON venda_produto.pk_produto = produto.pk_produto WHERE pk_venda = ?'
@@ -133,6 +169,186 @@ class Database:
             return False
         else:
             return result
+        
+    def consulta_media_gasto(self,pk): # Consulta a média do valor que cada usuario gasta no restaurante
+        sql = '''SELECT AVG(valor),u.nome_usuario FROM venda v
+                INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
+                WHERE pk_restaurante = ? GROUP BY v.pk_usuario;'''
+        result = self.conexao.execute(sql,(pk,))
+        result = result.fetchall()
+        if not result:
+            return False
+        else:
+            return result
+        
+    def consulta_maior_compra(self,pk): # Consulta o nome do usuario que fez a maior compra(valor) e o valor de um restaurante específico
+        sql = '''SELECT u.nome_usuario,MAX(valor) FROM venda v
+                INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
+                WHERE pk_restaurante = ?;'''
+        result = self.conexao.execute(sql,(pk,))
+        result = result.fetchone()
+        if not result:
+            return False
+        else:
+            return result
+        
+    def consulta_maior_quantidade(self,pk): # Consulta a compra com a maior quantidade de itens
+        sql = '''SELECT vp.pk_venda,SUM(quantidade) FROM venda_produto vp 
+            INNER JOIN venda v ON v.pk_venda = vp.pk_venda 
+            WHERE v.pk_restaurante = ?
+            GROUP BY vp.pk_venda ORDER BY SUM(quantidade) DESC LIMIT 1'''
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def consulta_maior_comissao(self): # Consulta o restaurante com a maior comissao
+        sql = f'SELECT pk_restaurante,restaurante,MAX(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
+        result = self.conexao.execute(sql)
+        return result.fetchone()
+
+    def consulta_menor_comissao(self): # Consulta o restaurante com a menor comissao
+        sql = f'SELECT pk_restaurante,restaurante,MIN(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
+        result = self.conexao.execute(sql)
+        return result.fetchone()
+
+    def consulta_mais_pedido(self,pk): # Consulta o item mais pedido de um restaurante específico
+        sql = '''SELECT p.nome_produto,COUNT(vp.pk_produto) FROM venda_produto vp
+        INNER JOIN venda v ON v.pk_venda = vp.pk_venda
+        INNER JOIN produto p ON p.pk_produto = vp.pk_produto
+        WHERE v.pk_restaurante = ?
+        GROUP BY vp.pk_produto ORDER BY COUNT(vp.pk_produto) DESC LIMIT 1'''
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_criado(self,pk): # Consulta a quantidade de pedidos com o status "Criado"
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "criado" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_aceito(self,pk): # Consulta a quantidade de pedidos com o status "Aceito"
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "aceito" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_rejeitado(self,pk): # Consulta a quantidade de pedidos com o status "Rejeitado"
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "rejeitado" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+
+    def status_saiu_entrega(self,pk): # Consulta a quantidade de pedidos com o status "Saiu para a entrega"
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "saiu para entrega" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def status_entregue(self,pk): # Consulta a quantidade de pedidos com o status "Entregue"
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "entregue" AND pk_restaurante = ?;'
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
+    
+    def depois(self): # TODO
+        sql = '''SELECT 
+                COUNT(CASE WHEN strftime('%w',criacao) = '0' THEN pk_venda ELSE NULL END) AS 'Domingo',
+                COUNT(CASE WHEN strftime('%w',criacao) = '1' THEN pk_venda ELSE NULL END) AS 'Segunda',
+                COUNT(CASE WHEN strftime('%w',criacao) = '2' THEN pk_venda ELSE NULL END) AS 'Terça',
+                COUNT(CASE WHEN strftime('%w',criacao) = '3' THEN pk_venda ELSE NULL END) AS 'Quarta',
+                COUNT(CASE WHEN strftime('%w',criacao) = '4' THEN pk_venda ELSE NULL END) AS 'Quinta',
+                COUNT(CASE WHEN strftime('%w',criacao) = '5' THEN pk_venda ELSE NULL END) AS 'Sexta',
+                COUNT(CASE WHEN strftime('%w',criacao) = '6' THEN pk_venda ELSE NULL END) AS 'Sábado'
+            FROM venda v;'''
+            
+    def consulta_quantidade_usuario_restaurante(self): # Consulta quantos restaurantes e usuarios estão cadastrados na database"
+        sql = f"SELECT (SELECT COUNT(1) FROM restaurante r) AS 'restaurante', (SELECT COUNT(1) FROM usuario u WHERE admin = 0) AS 'Usuario';"
+        result = self.conexao.execute(sql)
+        return result.fetchone()
+    
+    def consulta_valor_medio_pedido(self): # Consulta a média do ganhos de cada restaurante
+        sql = '''SELECT AVG(valor), r.restaurante FROM venda
+                INNER JOIN restaurante r  ON venda.pk_restaurante  = r.pk_restaurante 
+                GROUP BY venda.pk_restaurante;'''
+        result = self.conexao.execute(sql)
+        return result.fetchall()
+    
+    def consulta_pedido_mes_restaurante(self): # Consulta a quantidade de pedidos de cada mês de todos os restaurantes
+        sql = '''SELECT
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
+                COUNT(CASE WHEN strftime('%m', v.criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro',
+            	r.restaurante 
+                FROM venda v
+                INNER JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
+                GROUP BY v.pk_restaurante ;'''
+        result = self.conexao.execute(sql)
+        return result.fetchall()
+    
+    def consulta_pedidos_unico(self): # Consulta usuarios unicos em cada restaurante
+        sql = '''SELECT r.restaurante, COUNT(DISTINCT pk_usuario) as 'usuarios' FROM venda v
+                INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
+                GROUP BY r.pk_restaurante ;'''
+        result = self.conexao.execute(sql)
+        return result.fetchall()
+    
+    def consulta_status_venda(self,pk): # Executa as consultas da venda, cria um dicionario e retorna
+        criado = self.status_criado(pk)
+        aceito = self.status_aceito(pk)
+        rejeitado = self.status_rejeitado(pk)
+        saiu_entrega = self.status_saiu_entrega(pk)
+        entregue = self.status_entregue(pk)
+        
+        status = {
+            "criado":criado[0],
+            "aceito":aceito[0],
+            "rejeitado":rejeitado[0],
+            "saiu_entrega":saiu_entrega[0],
+            "entregue":entregue[0]
+            }
+        
+        return status
+    
+    def relatorio(self,pk): # Executa o relatório para o restaurante
+        if self.consulta_restaurante_produtos(pk) == False:
+            return {"check":False}
+        media_gasto = self.consulta_media_gasto(pk)
+        maior_compra = self.consulta_maior_compra(pk)
+        mais_pedido = self.consulta_mais_pedido(pk)
+        maior_quantidade = self.consulta_maior_quantidade(pk)
+        status = self.consulta_status_venda(pk)
+        
+        consultas = {
+            "media_gasto":media_gasto,
+            "maior_compra":maior_compra,
+            "mais_pedido":mais_pedido,
+            "maior_quantidade":maior_quantidade,
+            "criado":status["criado"],
+            "aceito":status["aceito"],
+            "rejeitado":status["rejeitado"],
+            "saiu_entrega":status["saiu_entrega"],
+            "entregue":status["entregue"]
+        }
+
+        return consultas
+    
+    def relatorio_administrativo(self): # Executa o relatório para o administrador
+        quantidade_res_usu = self.consulta_quantidade_usuario_restaurante()
+        valor_medio = self.consulta_valor_medio_pedido()
+        pedido_mes = self.consulta_pedido_mes_restaurante()
+        usuario_unico = self.consulta_pedidos_unico()
+        
+        consultas = {
+            "res_usu":quantidade_res_usu,
+            "valor_medio":valor_medio,
+            "pedido_mes":pedido_mes,
+            "usuario_unico":usuario_unico
+        }
+        
+        return consultas
 
     def executar(self,sql,tupla): # É só um execute com commit
         self.conexao.execute(sql,tupla)
