@@ -65,10 +65,7 @@
                     {% for restaurante in consultas["pedido_mes"] %}
                         <div class="pedido-mes-card">
                             <h4>Restaurante: {{ restaurante[12] }}</h4>
-                            <p>| Janeiro | {{restaurante[0]}} | Fevereiro | {{restaurante[1]}} | Março | {{restaurante[2]}}</p>
-                            <p>| Abril | {{restaurante[3]}} | Maio | {{restaurante[4]}} | Junho | {{restaurante[5]}}</p>
-                            <p>| Julho | {{restaurante[6]}} | Agosto | {{restaurante[7]}} | Setembro | {{restaurante[8]}}</p>
-                            <p>| Outubro | {{restaurante[9]}} | Novembro | {{restaurante[10]}} | Dezembro | {{restaurante[11]}}</p>
+                            <p>| Janeiro | {{restaurante[0]}} | Fevereiro | {{restaurante[1]}} | Março | {{restaurante[2]}} | Abril | {{restaurante[3]}} | Maio | {{restaurante[4]}} | Junho | {{restaurante[5]}} | Julho | {{restaurante[6]}} | Agosto | {{restaurante[7]}} | Setembro | {{restaurante[8]}} | Outubro | {{restaurante[9]}} | Novembro | {{restaurante[10]}} | Dezembro | {{restaurante[11]}} |</p>
                         </div>
                     {% endfor %}
                 {% else %}
@@ -86,6 +83,19 @@
                     {% endfor %}
                 {% else %}
                     <p>Não há restaurantes com vendas</p>
+                {% endif %}
+            </section>
+
+            <section class="soma-valores">
+                <h3>Soma total dos valores das vendas dos restaurantes</h3>
+                {% if consultas["valor_medio"] == false %}
+                    <p>Não há restaurantes com vendas</p>
+                {% else %}
+                    {% for restaurante in consultas["valores"] %}
+                        <div class="soma-valores-card">
+                            <p>Restaurante: {{ restaurante[1] }} | Soma total das vendas: R${{ restaurante[0] | formatoDinheiro }}</p>
+                        </div>
+                    {% endfor %}
                 {% endif %}
             </section>
         {% endif %}

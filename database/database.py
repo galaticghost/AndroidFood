@@ -219,6 +219,13 @@ class Database:
         sql = f'SELECT pk_restaurante,restaurante,MIN(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante'
         result = self.conexao.execute(sql)
         return result.fetchone()
+    
+    def consulta_soma_valores(self):
+        sql = '''SELECT SUM(valor), r.restaurante FROM venda v
+        INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
+        GROUP BY v.pk_restaurante ORDER BY SUM(valor) DESC'''
+        result = self.conexao.execute(sql)
+        return result.fetchall()
 
     def consulta_mais_pedido(self,pk): # Consulta o item mais pedido de um restaurante específico
         sql = '''SELECT p.nome_produto,COUNT(vp.pk_produto) FROM venda_produto vp
@@ -284,22 +291,22 @@ class Database:
     
     def consulta_pedido_mes_restaurante(self): # Consulta a quantidade de pedidos de cada mês de todos os restaurantes
         sql = '''SELECT
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
-    COUNT(CASE WHEN strftime('%m', v.criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro',
-    r.restaurante 
-    FROM venda v
-    RIGHT JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
-    GROUP BY r.pk_restaurante ;'''
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
+        COUNT(CASE WHEN strftime('%m', v.criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro',
+        r.restaurante 
+        FROM venda v
+        RIGHT JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
+        GROUP BY r.pk_restaurante ;'''
         result = self.conexao.execute(sql)
         return result.fetchall()
     
@@ -345,7 +352,7 @@ class Database:
         mais_pedido = self.consulta_mais_pedido(pk)
         maior_quantidade = self.consulta_maior_quantidade(pk)
         status = self.consulta_status_venda(pk)
-        media_meses = 0
+        media_meses = self.consulta_media_meses(pk)
         
         consultas = {
             "media_gasto":media_gasto,
@@ -369,6 +376,7 @@ class Database:
         usuario_unico = self.consulta_pedidos_unico()
         maior_comissao = self.consulta_maior_comissao()
         menor_comissao = self.consulta_menor_comissao()
+        valores = self.consulta_soma_valores()
         
         consultas = {
             "res_usu":quantidade_res_usu,
@@ -376,7 +384,8 @@ class Database:
             "pedido_mes":pedido_mes,
             "usuario_unico":usuario_unico,
             "maior_comissao":maior_comissao,
-            "menor_comissao":menor_comissao
+            "menor_comissao":menor_comissao,
+            "valores":valores
         }
         
         return consultas

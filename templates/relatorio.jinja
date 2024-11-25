@@ -54,6 +54,17 @@
           <p>Status entregue: {{consultas["entregue"]}}</p>
           <p>Status rejeitados: {{consultas["rejeitado"]}}</p>
         </div>
+
+        <div class="media-dia-semana">
+          <h3>sfa</h3>
+          <p>Segunda: {{ consultas["media_meses"][1] }}</p>
+          <p>Terça: {{ consultas["media_meses"][2] }}</p>
+          <p>Quarta: {{ consultas["media_meses"][3] }}</p>
+          <p>Quinta: {{ consultas["media_meses"][4] }}</p>
+          <p>Sexta: {{ consultas["media_meses"][5] }}</p>
+          <p>Sábado: {{ consultas["media_meses"][6] }}</p>
+          <p>Domingo: {{ consultas["media_meses"][0] }}</p>
+        </div>
       </section>
     {% else %}
       <section class="section-main">

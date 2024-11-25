@@ -58,3 +58,7 @@ SELECT
 
 SELECT pk_restaurante,restaurante,MAX(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante; -- maior comissao
 SELECT pk_restaurante,restaurante,MIN(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante; -- menor comissao
+
+SELECT SUM(valor), r.restaurante FROM venda v
+INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
+GROUP BY v.pk_restaurante ORDER BY SUM(valor) DESC -- Insight: A soma do valor total das vendas mais o nome do restaurante: 
