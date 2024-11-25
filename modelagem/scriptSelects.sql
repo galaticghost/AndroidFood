@@ -22,18 +22,18 @@ COUNT(CASE WHEN status = 'aceito' THEN status ELSE NULL END) AS 'Aceito',
 COUNT(CASE WHEN status = 'rejeitado' THEN status ELSE NULL END) AS 'Rejeitado',
 COUNT(CASE WHEN status = 'saiu para a entrega' THEN status ELSE NULL END) AS 'Saiu para a entrega',
 COUNT(CASE WHEN status = 'entregue' THEN status ELSE NULL END) AS 'Entregue'
-FROM venda v WHERE  pk_restaurante = 3;
+FROM venda v WHERE pk_restaurante = 3;
 
 
 SELECT (SELECT COUNT(1) FROM restaurante r) AS 'restaurante', (SELECT COUNT(1) FROM usuario u WHERE admin = 0) AS 'Usuario'; -- Quantidade de restaurantes e clientes cadastrados
 
 SELECT r.restaurante, COUNT(DISTINCT pk_usuario) as 'usuarios' FROM venda v
-                INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
+                RIGHT JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
                 GROUP BY r.pk_restaurante ; --Quantidade de clientes únicos que já fizeram um pedido em cada restaurante
 
 SELECT AVG(valor), r.restaurante FROM venda
-                INNER JOIN restaurante r  ON venda.pk_restaurante  = r.pk_restaurante 
-                GROUP BY venda.pk_restaurante; -- Ticket médio por restaurante (valor médio de cada pedido)
+                RIGHT JOIN restaurante r  ON venda.pk_restaurante  = r.pk_restaurante 
+                GROUP BY r.pk_restaurante; -- Ticket médio por restaurante (valor médio de cada pedido)
 
 SELECT
     COUNT(CASE WHEN strftime('%m', v.criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
@@ -50,8 +50,8 @@ SELECT
     COUNT(CASE WHEN strftime('%m', v.criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro',
     r.restaurante 
     FROM venda v
-    INNER JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
-    GROUP BY v.pk_restaurante ; --Pivote a quantidade de pedidos de cada restaurante (linhas) e meses (colunas)
+    RIGHT JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
+    GROUP BY r.pk_restaurante ; --Pivote a quantidade de pedidos de cada restaurante (linhas) e meses (colunas)
 
 -- Tecnicamente o trabalho pedia pela menor e maior comissao do restaurante, mas todos os restuarantes tem uma unica comissao, então os selects a seguir
 -- pega o restaurante com a menor comissao e pega o restaurante com a maior comissao

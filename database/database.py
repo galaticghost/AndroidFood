@@ -44,11 +44,20 @@ class Database:
                             quantidade INTEGER NOT NULL,
                             valor_total NUMERIC CHECK(valor_total > 0) NOT NULL
                             );''')
-        self.conexao.execute("INSERT INTO usuario(nome_usuario,email_usuario,senha_usuario,admin) VALUES ('admin','admin@androidfood.com','274672838a8002344fed81ca1228bf05',1)") # a senha é 123aA, login padrao do admin TODO
+        if self.check_admin() == False:
+            self.conexao.execute("INSERT INTO usuario(nome_usuario,email_usuario,senha_usuario,admin) VALUES ('admin','admin@androidfood.com','274672838a8002344fed81ca1228bf05',1)") # a senha é 123aA, login padrao do admin TODO
         self.conexao.commit
 
     def __str__(self):
         return f"{self.conexao}"
+    
+    def check_admin(self):
+        sql = f'SELECT 1 FROM usuario WHERE admin = 1;'
+        result = self.conexao.execute(sql)
+        if result.fetchone() == None:
+            return False
+        else:
+            return True
 
     def consulta_comissao(self): # Consulta a maior comissao e retorna ela
         result = self.conexao.execute('SELECT comissao FROM restaurante ORDER BY comissao DESC LIMIT 1')
@@ -265,39 +274,45 @@ class Database:
     
     def consulta_valor_medio_pedido(self): # Consulta a média do ganhos de cada restaurante
         sql = '''SELECT AVG(valor), r.restaurante FROM venda
-                INNER JOIN restaurante r  ON venda.pk_restaurante  = r.pk_restaurante 
-                GROUP BY venda.pk_restaurante;'''
+                RIGHT JOIN restaurante r  ON venda.pk_restaurante  = r.pk_restaurante 
+                GROUP BY r.pk_restaurante;'''
         result = self.conexao.execute(sql)
         result = result.fetchall()
-        print(result)
         if not result:
             return False
         return result
     
     def consulta_pedido_mes_restaurante(self): # Consulta a quantidade de pedidos de cada mês de todos os restaurantes
         sql = '''SELECT
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
-                COUNT(CASE WHEN strftime('%m', v.criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro',
-            	r.restaurante 
-                FROM venda v
-                INNER JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
-                GROUP BY v.pk_restaurante ;'''
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '1' THEN 1 ELSE NULL END) AS 'janeiro',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '2' THEN 1 ELSE NULL END) AS 'fevereiro',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '3' THEN 1 ELSE NULL END) AS 'março',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '4' THEN 1 ELSE NULL END) AS 'abril',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '5' THEN 1 ELSE NULL END) AS 'maio',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '6' THEN 1 ELSE NULL END) AS 'junho',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '7' THEN 1 ELSE NULL END) AS 'julho',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '8' THEN 1 ELSE NULL END) AS 'agosto',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '9' THEN 1 ELSE NULL END) AS 'setembro',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '10' THEN 1 ELSE NULL END) AS 'outubro',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '11' THEN 1 ELSE NULL END) AS 'novembro',
+    COUNT(CASE WHEN strftime('%m', v.criacao) = '12' THEN 1 ELSE NULL END) AS 'dezembro',
+    r.restaurante 
+    FROM venda v
+    RIGHT JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
+    GROUP BY r.pk_restaurante ;'''
         result = self.conexao.execute(sql)
+        return result.fetchall()
+    
+    def consulta_restaurantes(self):
+        sql = f'SELECT pk_restaurante, restaurante FROM restaurante'
+        result = self.conexao.execute(sql)
+        if not result:
+            return False
         return result.fetchall()
     
     def consulta_pedidos_unico(self): # Consulta usuarios unicos em cada restaurante
         sql = '''SELECT r.restaurante, COUNT(DISTINCT pk_usuario) as 'usuarios' FROM venda v
-                INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
+                RIGHT JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
                 GROUP BY r.pk_restaurante ;'''
         result = self.conexao.execute(sql)
         result = result.fetchall()

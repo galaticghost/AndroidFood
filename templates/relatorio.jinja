@@ -61,7 +61,7 @@
       </section>
     {% endif %}
     <section class="buttons">
-      <button><a href="{{ url_for('restaurante') }}">Voltar</a></button>
+      <button><a href="{{ url_for('restaurantes_admin') if session['admin'] == true else url_for('restaurante') }}">Voltar</a></button>
       <button><a href="{{ url_for('logout') }}">Logout</a></button>
     </section>
   </body>

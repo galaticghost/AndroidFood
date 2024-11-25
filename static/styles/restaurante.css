@@ -65,6 +65,7 @@ body {
 
 .pedido button:hover {
   background-color: #fea82f;
+  cursor: pointer;
 }
 
 a {
