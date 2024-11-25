@@ -44,6 +44,7 @@ class Database:
                             quantidade INTEGER NOT NULL,
                             valor_total NUMERIC CHECK(valor_total > 0) NOT NULL
                             );''')
+        self.conexao.execute("INSERT INTO usuario(nome_usuario,email_usuario,senha_usuario,admin) VALUES ('admin','admin@androidfood.com','274672838a8002344fed81ca1228bf05',1)") # a senha é 123aA, login padrao do admin TODO
         self.conexao.commit
 
     def __str__(self):
@@ -244,7 +245,7 @@ class Database:
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
-    def depois(self): # TODO
+    def consulta_media_meses(self,pk): # TODO
         sql = '''SELECT 
                 COUNT(CASE WHEN strftime('%w',criacao) = '0' THEN pk_venda ELSE NULL END) AS 'Domingo',
                 COUNT(CASE WHEN strftime('%w',criacao) = '1' THEN pk_venda ELSE NULL END) AS 'Segunda',
@@ -253,7 +254,9 @@ class Database:
                 COUNT(CASE WHEN strftime('%w',criacao) = '4' THEN pk_venda ELSE NULL END) AS 'Quinta',
                 COUNT(CASE WHEN strftime('%w',criacao) = '5' THEN pk_venda ELSE NULL END) AS 'Sexta',
                 COUNT(CASE WHEN strftime('%w',criacao) = '6' THEN pk_venda ELSE NULL END) AS 'Sábado'
-            FROM venda v;'''
+            FROM venda v WHERE pk_restaurante = ?;'''
+        result = self.conexao.execute(sql,(pk,))
+        return result.fetchone()
             
     def consulta_quantidade_usuario_restaurante(self): # Consulta quantos restaurantes e usuarios estão cadastrados na database"
         sql = f"SELECT (SELECT COUNT(1) FROM restaurante r) AS 'restaurante', (SELECT COUNT(1) FROM usuario u WHERE admin = 0) AS 'Usuario';"
@@ -265,7 +268,11 @@ class Database:
                 INNER JOIN restaurante r  ON venda.pk_restaurante  = r.pk_restaurante 
                 GROUP BY venda.pk_restaurante;'''
         result = self.conexao.execute(sql)
-        return result.fetchall()
+        result = result.fetchall()
+        print(result)
+        if not result:
+            return False
+        return result
     
     def consulta_pedido_mes_restaurante(self): # Consulta a quantidade de pedidos de cada mês de todos os restaurantes
         sql = '''SELECT
@@ -293,7 +300,10 @@ class Database:
                 INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
                 GROUP BY r.pk_restaurante ;'''
         result = self.conexao.execute(sql)
-        return result.fetchall()
+        result = result.fetchall()
+        if not result:
+            return False
+        return result
     
     def consulta_status_venda(self,pk): # Executa as consultas da venda, cria um dicionario e retorna
         criado = self.status_criado(pk)
@@ -320,6 +330,7 @@ class Database:
         mais_pedido = self.consulta_mais_pedido(pk)
         maior_quantidade = self.consulta_maior_quantidade(pk)
         status = self.consulta_status_venda(pk)
+        media_meses = 0
         
         consultas = {
             "media_gasto":media_gasto,
@@ -330,7 +341,8 @@ class Database:
             "aceito":status["aceito"],
             "rejeitado":status["rejeitado"],
             "saiu_entrega":status["saiu_entrega"],
-            "entregue":status["entregue"]
+            "entregue":status["entregue"],
+            "media_meses":media_meses
         }
 
         return consultas
@@ -340,12 +352,16 @@ class Database:
         valor_medio = self.consulta_valor_medio_pedido()
         pedido_mes = self.consulta_pedido_mes_restaurante()
         usuario_unico = self.consulta_pedidos_unico()
+        maior_comissao = self.consulta_maior_comissao()
+        menor_comissao = self.consulta_menor_comissao()
         
         consultas = {
             "res_usu":quantidade_res_usu,
             "valor_medio":valor_medio,
             "pedido_mes":pedido_mes,
-            "usuario_unico":usuario_unico
+            "usuario_unico":usuario_unico,
+            "maior_comissao":maior_comissao,
+            "menor_comissao":menor_comissao
         }
         
         return consultas

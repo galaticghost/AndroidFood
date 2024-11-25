@@ -156,7 +156,7 @@ def relatorio_admin():
     if session.get('login') == None or session['login'] == False:
         session['login'] = False
         return index()
-    
+
     consultas = database.relatorio_administrativo()
     
     return render_template("relatorioAdmin.jinja", consultas = consultas)

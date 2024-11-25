@@ -29,34 +29,64 @@
 
             <section class="valor-medio">
                 <h3>Valor médio das compras de cada restaurante</h3>
-                {% for restaurante in consultas["valor_medio"] %}
-                    <div class="valor-medio-card">
-                        <h4>Restaurante: {{ restaurante[1] }}</h4>
-                        <p>Valor médio de venda: R${{ restaurante[0] | formatoDinheiro }}</p>
-                    </div>
-                {% endfor %}
+                {% if consultas["valor_medio"] != false %}
+                    {% for restaurante in consultas["valor_medio"] %}
+                        <div class="valor-medio-card">
+                            <h4>Restaurante: {{ restaurante[1] }}</h4>
+                            <p>Valor médio de venda: R${{ restaurante[0] | formatoDinheiro }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Não há restaurantes com vendas</p>
+                {% endif %}
+            </section>
+
+            <section class="maior-comissao">
+                <h3>Restaurante com a maior comissao</h3>
+                {% if consultas["res_usu"][0] == 0 %}
+                    <p>Não há restaurantes cadastrados</p>
+                {% else %}
+                    <p>O restaurante com a maior comissão é o {{ consultas["maior_comissao"][1] }}</p>
+                {% endif %}
+            </section>
+
+            <section class="menor-comissao">
+                <h3>Restaurante com a menor comissao</h3>
+                {% if consultas["res_usu"][0] == 0 %}
+                    <p>Não há restaurantes cadastrados</p>
+                {% else %}
+                    <p>O restaurante com a menor comissão é o {{ consultas["menor_comissao"][1] }}</p>
+                {% endif %}
             </section>
 
             <section class="pedido-mes">
                 <h3>Pedidos por mês de cada restaurante</h3>
-                {% for restaurante in consultas["pedido_mes"] %}
-                    <div class="pedido-mes-card">
-                        <h4>Restaurante: {{ restaurante[12] }}</h4>
-                        <p>| Janeiro | {{restaurante[0]}} | Fevereiro | {{restaurante[1]}} | Março | {{restaurante[2]}}</p>
-                        <p>| Abril | {{restaurante[3]}} | Maio | {{restaurante[4]}} | Junho | {{restaurante[5]}}</p>
-                        <p>| Julho | {{restaurante[6]}} | Agosto | {{restaurante[7]}} | Setembro | {{restaurante[8]}}</p>
-                        <p>| Outubro | {{restaurante[9]}} | Novembro | {{restaurante[10]}} | Dezembro | {{restaurante[11]}}</p>
-                    </div>
-                {% endfor %}
+                {% if consultas["valor_medio"] != false %}
+                    {% for restaurante in consultas["pedido_mes"] %}
+                        <div class="pedido-mes-card">
+                            <h4>Restaurante: {{ restaurante[12] }}</h4>
+                            <p>| Janeiro | {{restaurante[0]}} | Fevereiro | {{restaurante[1]}} | Março | {{restaurante[2]}}</p>
+                            <p>| Abril | {{restaurante[3]}} | Maio | {{restaurante[4]}} | Junho | {{restaurante[5]}}</p>
+                            <p>| Julho | {{restaurante[6]}} | Agosto | {{restaurante[7]}} | Setembro | {{restaurante[8]}}</p>
+                            <p>| Outubro | {{restaurante[9]}} | Novembro | {{restaurante[10]}} | Dezembro | {{restaurante[11]}}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Não há restaurantes com vendas</p>
+                {% endif %}
             </section>
 
             <section class="usuario-unico">
                 <h3>Usuários únicos por restaurante</h3>
-                {% for restaurante in consultas["usuario_unico"] %}
-                    <div class="usuario-unico-card">
-                        <p>Restaurante: {{ restaurante[0] }} | Usuários: {{ restaurante[1] }}</p>
-                    </div>
-                {% endfor %}
+                {% if consultas["usuario_unico"] != false %}
+                    {% for restaurante in consultas["usuario_unico"] %}
+                        <div class="usuario-unico-card">
+                            <p>Restaurante: {{ restaurante[0] }} | Usuários: {{ restaurante[1] }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Não há restaurantes com vendas</p>
+                {% endif %}
             </section>
         {% endif %}
     </section>

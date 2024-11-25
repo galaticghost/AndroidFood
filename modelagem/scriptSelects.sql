@@ -52,3 +52,9 @@ SELECT
     FROM venda v
     INNER JOIN restaurante r ON r.pk_restaurante = v.pk_restaurante 
     GROUP BY v.pk_restaurante ; --Pivote a quantidade de pedidos de cada restaurante (linhas) e meses (colunas)
+
+-- Tecnicamente o trabalho pedia pela menor e maior comissao do restaurante, mas todos os restuarantes tem uma unica comissao, então os selects a seguir
+-- pega o restaurante com a menor comissao e pega o restaurante com a maior comissao
+
+SELECT pk_restaurante,restaurante,MAX(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante; -- maior comissao
+SELECT pk_restaurante,restaurante,MIN(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante; -- menor comissao
