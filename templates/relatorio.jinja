@@ -57,13 +57,13 @@
 
         <div class="media-dia-semana">
           <h3>Média de pedidos em cada dia da semana</h3>
-          <p>Segunda: {{ consultas["media_meses"][1] }}</p>
-          <p>Terça: {{ consultas["media_meses"][2] }}</p>
-          <p>Quarta: {{ consultas["media_meses"][3] }}</p>
-          <p>Quinta: {{ consultas["media_meses"][4] }}</p>
-          <p>Sexta: {{ consultas["media_meses"][5] }}</p>
-          <p>Sábado: {{ consultas["media_meses"][6] }}</p>
-          <p>Domingo: {{ consultas["media_meses"][0] }}</p>
+          <p>Segunda: {{ consultas["media_meses"][1] if consultas["media_meses"][1] is not none else '0' }}</p>
+          <p>Terça: {{ consultas["media_meses"][2] if consultas["media_meses"][2] is not none else '0' }}</p>
+          <p>Quarta: {{ consultas["media_meses"][3] if consultas["media_meses"][3] is not none else '0' }}</p>
+          <p>Quinta: {{ consultas["media_meses"][4] if consultas["media_meses"][4] is not none else '0' }}</p>
+          <p>Sexta: {{ consultas["media_meses"][5] if consultas["media_meses"][5] is not none else '0' }}</p>
+          <p>Sábado: {{ consultas["media_meses"][6] if consultas["media_meses"][6] is not none else '0' }}</p>
+          <p>Domingo: {{ consultas["media_meses"][0] if consultas["media_meses"][0] is not none else '0' }}</p>
         </div>
       </section>
     {% else %}

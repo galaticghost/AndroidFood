@@ -263,15 +263,16 @@ class Database:
     
     def consulta_media_meses(self,pk): # TODO
         sql = '''SELECT 
-                COUNT(CASE WHEN strftime('%w',criacao) = '0' THEN pk_venda ELSE NULL END) AS 'Domingo',
-                COUNT(CASE WHEN strftime('%w',criacao) = '1' THEN pk_venda ELSE NULL END) AS 'Segunda',
-                COUNT(CASE WHEN strftime('%w',criacao) = '2' THEN pk_venda ELSE NULL END) AS 'Terça',
-                COUNT(CASE WHEN strftime('%w',criacao) = '3' THEN pk_venda ELSE NULL END) AS 'Quarta',
-                COUNT(CASE WHEN strftime('%w',criacao) = '4' THEN pk_venda ELSE NULL END) AS 'Quinta',
-                COUNT(CASE WHEN strftime('%w',criacao) = '5' THEN pk_venda ELSE NULL END) AS 'Sexta',
-                COUNT(CASE WHEN strftime('%w',criacao) = '6' THEN pk_venda ELSE NULL END) AS 'Sábado'
-            FROM venda v WHERE pk_restaurante = ?;'''
-        result = self.conexao.execute(sql,(pk,))
+                (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = ? AND strftime('%w',criacao) = '0') AS 'Domingo',
+                (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = ? AND strftime('%w',criacao) = '1') AS 'Segunda',
+                (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = ? AND strftime('%w',criacao) = '2') AS 'Terça',
+                (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = ? AND strftime('%w',criacao) = '3') AS 'Quarta',
+                (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = ? AND strftime('%w',criacao) = '4') AS 'Quinta',
+                (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = ? AND strftime('%w',criacao) = '5') AS 'Sexta',
+                (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = ? AND strftime('%w',criacao) = '6') AS 'Sábado'
+            FROM venda v
+            LIMIT 1;'''
+        result = self.conexao.execute(sql,(pk,pk,pk,pk,pk,pk,pk))
         return result.fetchone()
             
     def consulta_quantidade_usuario_restaurante(self): # Consulta quantos restaurantes e usuarios estão cadastrados na database"
