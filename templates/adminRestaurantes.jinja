@@ -16,14 +16,16 @@
     </header>
 
 
-    {% if restaurantes == false %}
+    {% if restaurantes == false %} {# Caso não haja restaurantes#}
         <p>Nenhum restaurante cadastrado no sistema</p>
     {% else %}
         <div class="buttons">
-        {% for restaurante in restaurantes %}
-            <a href="{{ url_for('relatorio_restaurante_admin',pk = restaurante[0]) }}"><button>{{restaurante[1]}}</button></a>
+        {% for restaurante in restaurantes %} {# Para cada restaurante no sistema #}
+            <a href="{{ url_for('relatorio_restaurante_admin',pk = restaurante[0]) }}"><button>{{restaurante[1]}}</button></a> {# Vai para a tela de relatório do restaurante escolhido#}
         {% endfor %}
+            <a href="{{ url_for('relatorio_admin') }}"><button class="botao">Voltar</button></a> {# Volta para o relatório admin#}
         </div>
     {% endif %}
+
 </body>
 </html>

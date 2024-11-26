@@ -14,16 +14,17 @@
       <h1>ANDROID FOOD</h1>
       <p>O FOOD MAIS ANDROID DOS FOODS DO ANDROID</p>
     </header>
+
     <section class="section-main">
-    {% if login %}
-        {% if session.get('admin') != none and session['admin'] == 1 %}
+    {% if login %} {# Checa se o usuario está logado #}
+        {% if session.get('admin') != none and session['admin'] == 1 %} {# Verifica se o usuario é um admin #}
             <p>Clique <a href="{{ url_for('relatorio_admin') }}">aqui</a> para acessar os relatórios</p>
-        {% else %}
+        {% else %} {# Caso contrário ele é um restaurante #}
             <p>Clique <a href="{{ url_for('restaurante') }}">aqui</a> para acessar os pedidos</p>
         {% endif %}
         <p>Clique <a href="{{ url_for('logout') }}">aqui</a> para deslogar</p>
-    {% else %}
-        <p>Você não está logado.</p>
+    {% else %} {# Caso contrário mostra as opções de login #}
+        <p>Você não está logado.</p> 
         <p>Caso for um restaurante clique <a href="{{ url_for('login') }}">aqui</a> para logar</p>
         <p>Caso for admin clique <a href="{{ url_for('login_admin') }}">aqui</a> para logar</p>
     {% endif %}

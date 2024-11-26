@@ -18,9 +18,9 @@
 
     <h2 class="title">Relatório Administrativo</h2>
     <section class="section-main">
-        {% if consultas["falha_consulta"] == true %}
+        {% if consultas["falha_consulta"] == true %} {# Caso haja falha nas consultas #}
             <p>Falha nas consultas</p>
-        {% else %}
+        {% else %} {# Se não houver#}
             <section class="restaurante-usuario">
                 <h3>Quantidade de restaurantes e usuários cadastrados</h3>
                 <p>Restaurantes: {{ consultas["res_usu"][0] }}</p>
@@ -36,14 +36,14 @@
                             <p>Valor médio de venda: R${{ restaurante[0] | formatoDinheiro }}</p>
                         </div>
                     {% endfor %}
-                {% else %}
+                {% else %} {# Se não houver restaurantes cadastrados #}
                     <p>Não há restaurantes com vendas</p>
                 {% endif %}
             </section>
 
             <section class="maior-comissao">
                 <h3>Restaurante com a maior comissao</h3>
-                {% if consultas["res_usu"][0] == 0 %}
+                {% if consultas["res_usu"][0] == 0 %} {# Se não houver restaurantes cadastrados #}
                     <p>Não há restaurantes cadastrados</p>
                 {% else %}
                     <p>O restaurante com a maior comissão é o {{ consultas["maior_comissao"][1] }}</p>
@@ -52,7 +52,7 @@
 
             <section class="menor-comissao">
                 <h3>Restaurante com a menor comissao</h3>
-                {% if consultas["res_usu"][0] == 0 %}
+                {% if consultas["res_usu"][0] == 0 %} {# Se não houver restaurantes cadastrados #}
                     <p>Não há restaurantes cadastrados</p>
                 {% else %}
                     <p>O restaurante com a menor comissão é o {{ consultas["menor_comissao"][1] }}</p>
@@ -68,7 +68,7 @@
                             <p>| Janeiro | {{restaurante[0]}} | Fevereiro | {{restaurante[1]}} | Março | {{restaurante[2]}} | Abril | {{restaurante[3]}} | Maio | {{restaurante[4]}} | Junho | {{restaurante[5]}} | Julho | {{restaurante[6]}} | Agosto | {{restaurante[7]}} | Setembro | {{restaurante[8]}} | Outubro | {{restaurante[9]}} | Novembro | {{restaurante[10]}} | Dezembro | {{restaurante[11]}} |</p>
                         </div>
                     {% endfor %}
-                {% else %}
+                {% else %} {# Se não houver restaurantes cadastrados #}
                     <p>Não há restaurantes com vendas</p>
                 {% endif %}
             </section>
@@ -81,14 +81,14 @@
                             <p>Restaurante: {{ restaurante[0] }} | Usuários: {{ restaurante[1] }}</p>
                         </div>
                     {% endfor %}
-                {% else %}
+                {% else %} {# Se não houver restaurantes cadastrados #}
                     <p>Não há restaurantes com vendas</p>
                 {% endif %}
             </section>
 
             <section class="soma-valores">
                 <h3>Soma total dos valores das vendas dos restaurantes</h3>
-                {% if consultas["valor_medio"] == false %}
+                {% if consultas["valor_medio"] == false %} {# Se não houver restaurantes cadastrados #}
                     <p>Não há restaurantes com vendas</p>
                 {% else %}
                     {% for restaurante in consultas["valores"] %}
@@ -101,7 +101,7 @@
         {% endif %}
     </section>
     <section class="buttons">
-        <a href="{{ url_for('restaurantes_admin') }}"><button>Restaurantes</button></a>
+        <a href="{{ url_for('restaurantes_admin') }}"><button>Restaurantes</button></a> {# Botoes para logout e para a lista dos restaurantes#}
         <a href="{{ url_for('logout') }}"><button>Logout</button></a>
     </section>
 </body>

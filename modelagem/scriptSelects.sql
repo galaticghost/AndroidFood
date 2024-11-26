@@ -1,6 +1,6 @@
 SELECT AVG(valor),u.nome_usuario FROM venda v -- Qual a média de gasto de cada pessoa | Modifique o pk_restaurante para mudar os resultados
                 INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
-                WHERE pk_restaurante = 3 GROUP BY v.pk_usuario;
+                WHERE pk_restaurante = 3 AND status IS NOT 'rejeitado' GROUP BY v.pk_usuario;
 
 SELECT u.nome_usuario,MAX(valor) FROM venda v -- Qual a maior compra(em valor) feita no restaurante? | Modifique o pk_restaurante para mudar os resultados
                 INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
@@ -11,11 +11,11 @@ SELECT vp.pk_venda,SUM(quantidade) FROM venda_produto vp -- Qual o maior pedido(
             WHERE v.pk_restaurante = 3
             GROUP BY vp.pk_venda ORDER BY SUM(quantidade) DESC LIMIT 1;
 
-SELECT p.nome_produto,COUNT(vp.pk_produto) FROM venda_produto vp -- Qual o item mais pedido | Modifique o pk_restaurante para mudar os resultados
-        INNER JOIN venda v ON v.pk_venda = vp.pk_venda
-        INNER JOIN produto p ON p.pk_produto = vp.pk_produto
-        WHERE v.pk_restaurante = 3
-        GROUP BY vp.pk_produto ORDER BY COUNT(vp.pk_produto) DESC LIMIT 1;
+    SELECT p.nome_produto,SUM(vp.quantidade) FROM venda_produto vp
+INNER JOIN venda v ON v.pk_venda = vp.pk_venda
+INNER JOIN produto p ON p.pk_produto = vp.pk_produto
+WHERE v.pk_restaurante = 9
+GROUP BY vp.pk_produto ORDER BY SUM(vp.quantidade) DESC -- Qual o item mais pedido | Modifique o pk_restaurante para mudar os resultados
 
 SELECT COUNT(CASE WHEN status = 'criado' THEN status ELSE NULL END) AS 'Criado', -- Quantos pedidos em cada status? | Modifique o pk_restaurante para mudar os resultados
 COUNT(CASE WHEN status = 'aceito' THEN status ELSE NULL END) AS 'Aceito',
@@ -23,6 +23,17 @@ COUNT(CASE WHEN status = 'rejeitado' THEN status ELSE NULL END) AS 'Rejeitado',
 COUNT(CASE WHEN status = 'saiu para a entrega' THEN status ELSE NULL END) AS 'Saiu para a entrega',
 COUNT(CASE WHEN status = 'entregue' THEN status ELSE NULL END) AS 'Entregue'
 FROM venda v WHERE pk_restaurante = 3;
+
+SELECT 
+    (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = 3 AND strftime('%w',criacao) = '0') AS 'Domingo',
+    (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = 3 AND strftime('%w',criacao) = '1') AS 'Segunda',
+    (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = 3 AND strftime('%w',criacao) = '2') AS 'Terça',
+    (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = 3 AND strftime('%w',criacao) = '3') AS 'Quarta',
+    (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = 3 AND strftime('%w',criacao) = '4') AS 'Quinta',
+    (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = 3 AND strftime('%w',criacao) = '5') AS 'Sexta',
+    (SELECT COUNT(1)/COUNT(DISTINCT strftime('%Y %m %d',criacao)) FROM venda WHERE pk_restaurante = 3 AND strftime('%w',criacao) = '6') AS 'Sábado'
+FROM venda v
+LIMIT 1; -- Calcule a quantidade média de pedidos por cada dia da semana | Modifique o pk_restaurante para mudar os resultados
 
 
 SELECT (SELECT COUNT(1) FROM restaurante r) AS 'restaurante', (SELECT COUNT(1) FROM usuario u WHERE admin = 0) AS 'Usuario'; -- Quantidade de restaurantes e clientes cadastrados
@@ -60,5 +71,6 @@ SELECT pk_restaurante,restaurante,MAX(comissao),email_restaurante,senha_restaura
 SELECT pk_restaurante,restaurante,MIN(comissao),email_restaurante,senha_restaurante,criacao,ultima_atualizacao,tem_produtos FROM restaurante; -- menor comissao
 
 SELECT SUM(valor), r.restaurante FROM venda v
-INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
-GROUP BY v.pk_restaurante ORDER BY SUM(valor) DESC -- Insight: A soma do valor total das vendas mais o nome do restaurante: 
+INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante
+WHERE v.status IS NOT 'rejeitado'
+GROUP BY v.pk_restaurante ORDER BY SUM(valor) DESC -- Insight: A soma do valor total das vendas mais o nome do restaurante sem contar as vendas rejeitadas:  

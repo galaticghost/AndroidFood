@@ -16,31 +16,31 @@
     </header>
     
     
-    {% if pedidos[0] is none %}
+    {% if pedidos[0] is none %} {# Caso não haja pedidos #}
       <section class="pedidos">
         <p>Nenhum pedido</p>
       </section>
     {% else %}
       <section class="pedidos">
-        {% for pedido in pedidos%}
+        {% for pedido in pedidos%} {# Para cada pedido que não for rejeitado ou entregue ele mostra o id,valor,data de criacao,status e as opções de status#}
         <div class="pedido">
           <p class="id">ID pedido: {{ pedido["pk"] }}</p>
           <p class="valor">Valor: R$:{{ pedido["valor"] | formatoDinheiro }}</p>
           <p class="criacao">Criação: {{ pedido["criacao"] }}</p>
           <p class="status">Status: {{ pedido["status"] }}</p>
-          {% if pedido["status"] == "criado" %}
+          {% if pedido["status"] == "criado" %} {# Aceitar ou rejeitar #}
            <a href="{{ url_for('aceitar', pk=pedido['pk']) }}"> <button>Aceitar</button></a>
             <a href="{{ url_for('rejeitar', pk=pedido['pk']) }}"><button>Rejeitar</button></a>
-          {% elif pedido["status"] == "aceito" %}
+          {% elif pedido["status"] == "aceito" %} {# saiu para a entrega #}
             <a href="{{ url_for('entrega', pk=pedido['pk']) }}"><button>Saiu para a entrega</button></a>
-          {% elif pedido["status"] == "saiu para a entrega" %}
+          {% elif pedido["status"] == "saiu para a entrega" %} {# Entrgue #}
             <a href="{{ url_for('entregue', pk=pedido['pk']) }}"><button>Entregue</button></a>
           {% endif %}
         </div>
         {% endfor %}
       </section>
     {% endif %}
-    <a href="{{ url_for('relatorio') }}"><button class="util-button">Relatório</button></a>
+    <a href="{{ url_for('relatorio') }}"><button class="util-button">Relatório</button></a> {# Botões para o relatorio e o login #}
     <a href="{{ url_for('logout') }}"><button class="util-button">Logout</button></a>
 
     <footer class="footer">

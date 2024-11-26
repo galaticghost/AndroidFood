@@ -15,13 +15,13 @@
       <p>O FOOD MAIS ANDROID DOS FOODS DO ANDROID</p>
     </header>
 
-    {% if login %}
+    {% if login %} {# caso o usuario já esteja logado#}
       <p>Você já está logado.</p>
       <p>Clique <a href="{{ url_for('index')}}">aqui</a> para voltar a página inicial</p>
     {% else %}
-      {% if falha %}
+      {% if falha %} {# Se houver falha #}
         <p>Login inválido</p>
-      {% endif %}
+      {% endif %} {# Login #}
       <form method="post" action="{{ url_for(type_login) }}">
         <p><label for="email">Email: </label></p>
         <p><input type="text" id="email" name="email"></p>

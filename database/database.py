@@ -180,10 +180,10 @@ class Database:
         else:
             return result
         
-    def consulta_media_gasto(self,pk): # Consulta a média do valor que cada usuario gasta no restaurante
+    def consulta_media_gasto(self,pk): # Consulta a média do valor que cada usuario gasta no restaurante | Não conta as vendas rejeitadas
         sql = '''SELECT AVG(valor),u.nome_usuario FROM venda v
                 INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
-                WHERE pk_restaurante = ? GROUP BY v.pk_usuario;'''
+                WHERE pk_restaurante = ? AND status IS NOT 'rejeitado' GROUP BY v.pk_usuario;'''
         result = self.conexao.execute(sql,(pk,))
         result = result.fetchall()
         if not result:
@@ -191,10 +191,10 @@ class Database:
         else:
             return result
         
-    def consulta_maior_compra(self,pk): # Consulta o nome do usuario que fez a maior compra(valor) e o valor de um restaurante específico
+    def consulta_maior_compra(self,pk): # Consulta o nome do usuario que fez a maior compra(valor) e o valor de um restaurante específico | Não conta as vendas rejeitadas
         sql = '''SELECT u.nome_usuario,MAX(valor) FROM venda v
                 INNER JOIN usuario u ON u.pk_usuario = v.pk_usuario
-                WHERE pk_restaurante = ?;'''
+                WHERE pk_restaurante = ? AND status IS NOT 'rejeitado';'''
         result = self.conexao.execute(sql,(pk,))
         result = result.fetchone()
         if not result:
@@ -202,10 +202,10 @@ class Database:
         else:
             return result
         
-    def consulta_maior_quantidade(self,pk): # Consulta a compra com a maior quantidade de itens
+    def consulta_maior_quantidade(self,pk): # Consulta a compra com a maior quantidade de itens | Não conta as vendas rejeitadas
         sql = '''SELECT vp.pk_venda,SUM(quantidade) FROM venda_produto vp 
             INNER JOIN venda v ON v.pk_venda = vp.pk_venda 
-            WHERE v.pk_restaurante = ?
+            WHERE v.pk_restaurante = ? AND status IS NOT 'rejeitado'
             GROUP BY vp.pk_venda ORDER BY SUM(quantidade) DESC LIMIT 1'''
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
@@ -223,16 +223,17 @@ class Database:
     def consulta_soma_valores(self):
         sql = '''SELECT SUM(valor), r.restaurante FROM venda v
         INNER JOIN restaurante r ON v.pk_restaurante = r.pk_restaurante 
+        WHERE v.status IS NOT 'rejeitado'
         GROUP BY v.pk_restaurante ORDER BY SUM(valor) DESC'''
         result = self.conexao.execute(sql)
         return result.fetchall()
 
     def consulta_mais_pedido(self,pk): # Consulta o item mais pedido de um restaurante específico
-        sql = '''SELECT p.nome_produto,COUNT(vp.pk_produto) FROM venda_produto vp
+        sql = ''' SELECT p.nome_produto,SUM(vp.quantidade) FROM venda_produto vp
         INNER JOIN venda v ON v.pk_venda = vp.pk_venda
         INNER JOIN produto p ON p.pk_produto = vp.pk_produto
         WHERE v.pk_restaurante = ?
-        GROUP BY vp.pk_produto ORDER BY COUNT(vp.pk_produto) DESC LIMIT 1'''
+        GROUP BY vp.pk_produto ORDER BY SUM(vp.quantidade) DESC ;'''
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
@@ -252,7 +253,7 @@ class Database:
         return result.fetchone()
 
     def status_saiu_entrega(self,pk): # Consulta a quantidade de pedidos com o status "Saiu para a entrega"
-        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "saiu para entrega" AND pk_restaurante = ?;'
+        sql = f'SELECT COUNT(status) FROM venda v WHERE status = "saiu para a entrega" AND pk_restaurante = ?;'
         result = self.conexao.execute(sql,(pk,))
         return result.fetchone()
     
